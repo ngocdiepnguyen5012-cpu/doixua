@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Đời Xưa – game mô phỏng cuộc đời thời phong kiến: thi cử, làm quan, buôn bán, gia tộc, nhân quả.">
+<meta property="og:title" content="Đời Xưa – Game mô phỏng cuộc đời thời phong kiến">
+<meta property="og:description" content="Sinh ra, lớn lên, chọn con đường sĩ nông công thương binh và để lại danh tiếng cho đời sau.">
+<meta name="theme-color" content="#a8281f">
+<title>Đời Xưa – Game mô phỏng cuộc đời thời phong kiến</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap">
+<style>
+:root{--bg:#dde7e2;--card:#f8faf8;--tx:#1c2723;--mut:#5a6b64;--ac:#a8281f;--on:#fff;--bd:#c3d1ca;--bad:#a8281f;--lo:#a8281f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--card:#1b2128;--tx:#ece6d6;--mut:#9aa39c;--ac:#d8b25a;--on:#1b1608;--bd:#2c353d;--bad:#ff8a7a;--lo:#ff8a7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161b;--card:#1b2128;--tx:#ece6d6;--mut:#9aa39c;--ac:#d8b25a;--on:#1b1608;--bd:#2c353d;--bad:#ff8a7a;--lo:#ff8a7a;color-scheme:dark}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 "Noto Serif",Georgia,"Times New Roman",serif;display:flex;justify-content:center}
+#start{margin:auto;padding:24px;max-width:420px;text-align:center}
+#start h1{font-size:46px;font-weight:700;margin:0 0 10px;color:var(--ac)}
+#start p{color:var(--mut);margin:0 0 24px}
+#game{display:flex;flex-direction:column;height:100%;width:100%;max-width:520px;padding:12px}
+#game[hidden],#start[hidden]{display:none}
+#hd b{font-size:17px}
+#hd small{color:var(--mut);font-size:13px}
+#bars{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:12px;margin-top:10px}
+.bar{height:6px;background:var(--bd);border-radius:3px;margin-top:3px}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--ac)}
+.bar i.lo{background:var(--lo)}
+#log{flex:1;overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:4px 16px 12px;margin:8px 0 0}
+#log h3{margin:16px 0 2px;font-size:14px;color:var(--ac)}
+#log p{margin:4px 0}
+p.q{font-weight:700;border-left:3px solid var(--ac);padding-left:10px}
+p.r{color:var(--mut)}
+p.d{color:var(--bad);font-weight:700}
+button{width:100%;padding:13px;border-radius:8px;font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);margin-top:8px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.pb{background:var(--ac);color:var(--on);border:0;font-weight:700}
+#tabs{display:flex;gap:6px}
+#tabs button{margin-top:8px;padding:6px 1px;font-size:15px;line-height:1.25;flex:1;min-width:0}
+#tabs small{font-size:10.5px;display:block}
+.nc{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--bd)}
+.nb{flex:1;min-width:0}
+.bt{display:flex;gap:6px}
+.bt button{margin-top:6px;padding:7px 4px;font-size:13px;flex:1 1 30%;width:auto}
+.tb{color:var(--mut);font-size:13px;margin:10px 0 2px}
+button:disabled{opacity:.45;cursor:default}
+.hr{display:flex;gap:10px;align-items:center;cursor:pointer}
+.chv{margin-left:auto;color:var(--mut);padding:0 4px}
+#bars.cp{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;margin-top:4px}
+#bars.cp .lo{color:var(--lo);font-weight:700}
+.fam{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.np{display:flex;gap:10px;align-items:flex-start;margin:6px 0}
+.np p{margin:0}
+.up{display:flex;align-items:center;justify-content:center;gap:12px;line-height:1.25}
+.up small{font-weight:400;opacity:.85}
+.drum{transition:transform .45s cubic-bezier(.3,1.5,.5,1);flex:none}
+.sum{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div id="start">
+<h1>🏮 Đời Xưa</h1>
+<p>Bạn sinh ra dưới triều đại phong kiến. Đến tuổi 18, bạn chọn con đường của mình: làm quan, cầm quân, buôn bán, chữa bệnh, dạy học hay lang bạt giang hồ. Mỗi lựa chọn đều định đoạt số phận.</p>
+<button class="pb" onclick="newGame(0)">Sinh làm nam nhi 👨</button>
+<button class="pb" onclick="newGame(1)">Sinh làm nữ nhi 👩</button>
+<button id="bc" onclick="load()" hidden>Tiếp tục kiếp trước</button>
+</div>
+<div id="game" hidden>
+<div id="hd"></div>
+<div id="bars"></div>
+<div id="log"></div>
+<div id="tabs"></div>
+<div id="act"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const R=a=>a[Math.random()*a.length|0],p=x=>Math.random()<x,ri=(a,b)=>a+(Math.random()*(b-a+1)|0);
+const cl=v=>Math.max(0,Math.min(100,v));
+const SN=["Nguyễn","Trần","Lê","Phạm","Vũ","Đặng"],MN=["Văn","Đình","Quang","Hữu"],GN=["Minh","Chính","Đức","Thành","Hiếu","Khải"],WN=["Thị Lan","Thị Hoa","Thị Mai","Thị Cúc"];
+let RK=["Dân thường","Huấn đạo","Tri huyện","Tri phủ","Án sát sứ","Bố chính sứ","Thượng thư","Tể tướng"];
+const LAD={quan:RK,vo:["Dân thường","Lính","Suất đội","Hiệu úy","Phó tướng","Đại tướng quân","Thống lĩnh","Đại nguyên soái"],thuong:["Dân thường","Gánh hàng rong","Chủ tiệm","Chủ hiệu lớn","Thương gia","Đại phú thương","Hoàng thương","Đệ nhất phú thương"],y:["Dân thường","Học trò thầy lang","Lang y làng","Lang y nổi tiếng","Thầy thuốc phủ","Ngự y","Thái y","Thái y lệnh"],nho:["Dân thường","Thầy đồ làng","Thầy đồ có tiếng","Danh sĩ","Đại nho","Đại danh nho","Bậc tông sư","Thánh nho"],hiep:["Dân thường","Du hiệp","Hiệp khách","Thủ lĩnh nhóm","Thủ lĩnh vùng","Chủ soái nghĩa quân","Minh chủ","Hoàng đế khởi nghĩa"],nong:["Dân thường","Tá điền","Nông dân tự canh","Điền chủ nhỏ","Địa chủ","Đại địa chủ","Phú hào","Hào trưởng xứ"],cong:["Dân thường","Thợ học việc","Thợ lành nghề","Thợ cả","Chủ xưởng","Đại sư phụ","Nghệ nhân đại tài","Nghệ nhân cung đình"]},FN=["Lan","Hoa","Mai","Cúc","Trinh","Nguyệt","Liễu"],MAN=["Văn Hải","Văn Long","Đình Phong","Quang Vinh"];
+function setP(){RK=LAD[s.path||"quan"]}
+const SAL=[0,40,80,150,300,600,1200,2500];
+const DS={thien:{n:"🧘 Tĩnh tọa",a:1,b:2,c:0,l:1,d:"giữ lòng thanh tịnh, thêm thanh liêm"},khi:{n:"🥋 Khí công, luyện quyền",a:2,b:3,c:0,d:"hiệu quả nhất khi còn trẻ"},thuoc:{n:"🌿 Thuốc bổ, sâm nhung",a:2,b:4,c:40,d:"tốn 40 lạng mỗi năm"},dam:{n:"🍵 Ăn thanh đạm, tản bộ",a:1,b:2,c:-10,d:"tiết kiệm được ít bạc"}};
+const FA=[{n:"gia đình nông dân nghèo",hoc:10,uy:0,m:20,inc:5},{n:"gia đình thương nhân",hoc:15,uy:3,m:150,inc:20},{n:"gia đình nho gia",hoc:30,uy:8,m:60,inc:10},{n:"gia đình quan lại",hoc:25,uy:15,m:200,inc:30}];
+const ST=[["hp","❤️","Khí huyết",1],["hoc","📖","Đèn sách",1],["hue","💡","Huệ căn"],["dm","🌸","Dung mạo"],["uy","🏅","Uy tín",1],["liem","⚖️","Thanh liêm",1],["sung","👑","Thánh sủng"]];
+const Q=["Một năm bình lặng trôi qua.","Bạn đọc sách dưới ngọn đèn dầu, ngày tháng lặng lẽ trôi.","Năm nay không có gì đáng kể."];
+let s=null,ev=null,kd0=0;try{kd0=+localStorage.getItem("kd0")||0}catch(e){}
+const dk=n=>{s.duc=Math.max(-100,Math.min(100,(s.duc||0)+n))};
+function ch(k,d){s[k]=cl(s[k]+d);if(k=="liem"&&d){dk(Math.round(d*1.5));if(s.kq&&s.lqa===s.age&&(d<=-5||d>=3)&&s.kq.length<6&&!s.kq.some(q=>q.f===s.age)&&p(d<0?.65:.5))s.kq.push({y:s.age+ri(3,9),g:d>0?1:0,c:(s.lq||"").slice(0,56).replace(/\s+\S*$/,"")+"…",f:s.age})}}
+function L(t,c){s.log.push({t,c})}
+const o=(l,f)=>({l,f}),q=(a,b,w,t,op,c)=>({a,b,w,t,o:op,c}),u=(a,b,w,t,f,c)=>({a,b,w,t,f,c});
+const svc=()=>s.rank>=1&&!s.ret,off=()=>svc()&&s.path=="quan",vo=()=>svc()&&s.path=="vo",tr=()=>svc()&&s.path=="thuong",yy=()=>svc()&&s.path=="y",nh=()=>svc()&&s.path=="nho",hk=()=>svc()&&s.path=="hiep",nn=()=>svc()&&s.path=="nong",cg=()=>svc()&&s.path=="cong";
+const fall=m=>{if(s.cn)s.cn.p=Math.max(0,s.cn.p-5);s.rank=0;s.yr=0;s.wait=3;ch("uy",-15);if(s.as&&s.as.length&&p(.4)){const x=R(s.as);s.as=s.as.filter(y=>y!=x);m+=" Gia sản "+x.n+" bị tịch thu."}return m};
+const pro=()=>{s.rank++;s.yr=0;if(s.cn)s.cn.p=Math.min(100,s.cn.p+3);ch("sung",3);return (s.path=="thuong"?"💰 Cơ nghiệp của bạn đã lên tầm ":GR[s.path]?"🌟 Danh tiếng của bạn đã lên tầm ":"🎖️ Bạn được thăng ")+RK[s.rank]+"!"};
+const E=[
+u(1,5,3,"Bạn ốm một trận nặng, cha mẹ chạy chữa khắp nơi. 🤒",()=>ch("hp",-6)),
+u(3,10,2,"Bạn nghe kể chuyện các vị trạng nguyên xưa, lòng đầy ngưỡng mộ.",()=>ch("hoc",3)),
+q(7,13,2,"Thầy đồ trong làng nhận dạy bạn học chữ Nho.",[o("Chuyên tâm học hành",()=>{ch("hoc",6);ch("hp",-1);return "Chữ nghĩa của bạn tấn tới."}),o("Trốn học đi bắt chim",()=>{ch("hoc",-3);ch("hp",2);return "Bạn bị thầy phạt đánh roi."})]),
+q(8,15,2,"Làng đói kém, bạn gặp một đứa trẻ bơ vơ bên đường.",[o("Chia nửa bát cơm",()=>{ch("liem",4);ch("hp",-2);return "Đứa trẻ khóc cảm ơn bạn."}),o("Làm ngơ đi tiếp",()=>{ch("liem",-2);return "Bạn lặng lẽ bước đi."})]),
+q(10,17,2,"Cha muốn bạn nghỉ học ra đồng giúp việc.",[o("Xin cha cho học tiếp",()=>{if(p(.5)){ch("hoc",4);return "Cha mủi lòng, cho bạn tiếp tục đèn sách."}ch("hoc",-3);return "Cha không đồng ý, bạn vừa học vừa làm."}),o("Vâng lời cha",()=>{ch("hp",2);ch("hoc",-4);return "Bạn ra đồng cùng cha."})],()=>s.fam<2&&par().some(x=>x.r=="cha")),
+q(18,40,2,()=>s.f?"Bà mối đến hỏi gả bạn cho một chàng trai nhà tử tế.":"Gia đình hỏi cưới cho bạn một cô gái nhà tử tế.",[o("Đồng ý",()=>{s.wife=R(s.f?MAN:WN);addN("phoi",s.f?"chồng":"vợ","dan",!s.f,40,s.wife);s.money-=30;ch("uy",2);return "Bạn thành thân với "+s.wife+". 💍"}),o("Chờ khi công thành danh toại",()=>"Bạn xin gia đình hoãn lại.")],()=>!s.wife),
+q(20,42,2,()=>"Vợ chồng bàn chuyện con cái: "+(nf("phoi")?nf("phoi").n:"người bạn đời")+" hỏi bạn đã muốn có con chưa.",[o("Muốn có con ngay",()=>tryChild(0)),o("Đi chùa cầu tự (-40 lạng)",()=>{s.money-=40;dk(2);return tryChild(.15)}),o("Chưa muốn, để sau",()=>{const sp=nf("phoi");if(sp)bond(sp,-2);return "Hai vợ chồng hoãn chuyện con cái."})],()=>s.wife&&nf("phoi")&&s.kids<5&&!s.preg),
+u(18,70,3,"Bạn đàm đạo thơ phú cùng bạn đồng môn, tâm đắc vô cùng.",()=>{ch("hoc",3);ch("uy",2)}),
+u(30,80,2,"Bạn phải uống thuốc bắc suốt mấy tháng vì bệnh nặng. 🍵",()=>ch("hp",-8)),
+q(30,70,2,"Thầy lang khuyên bạn dưỡng sinh, bớt rượu chè.",[o("Nghe lời thầy lang",()=>{ch("hp",8);return "Bạn thấy người khỏe ra."}),o("Bỏ ngoài tai",()=>{ch("hp",-2);return "Bạn vẫn giữ thói quen cũ."})]),
+q(20,75,3,"Nhà giàu và nhà nghèo kiện nhau tranh ruộng, đưa lên công đường của bạn.",[o("Xử công minh",()=>{ch("uy",6);ch("liem",3);return "Dân khen bạn là quan thanh liêm."}),o("Nhận bạc nhà giàu, xử thiên vị",()=>{s.money+=120;ch("liem",-8);ch("uy",-4);return "Bạn bỏ túi 120 lạng bạc."}),o("Đẩy lên quan trên",()=>{ch("sung",-1);return "Quan trên không hài lòng vì bạn né việc."})],off),
+q(20,75,2,"Mất mùa, dân đói, kho thóc của quan vẫn còn đầy.",[o("Mở kho phát chẩn",()=>{ch("uy",8);ch("sung",-2);return "Dân sống sót nhờ bạn, dù bạn tự ý mở kho."}),o("Tâu triều chờ lệnh",()=>{ch("uy",-5);return "Lệnh đến thì nhiều người đã chết đói."}),o("Bòn rút kho thóc",()=>{s.money+=200;ch("liem",-10);ch("uy",-6);return "Bạn tư túi 200 lạng trên xương máu dân."})],off),
+q(22,70,2,"Giặc cướp nổi lên trong địa phương.",[o("Đem quân dẹp loạn",()=>{if(p(.5+s.uy/250)){ch("uy",8);ch("sung",4);return "Bạn dẹp yên giặc, uy danh vang xa. ⚔️"}ch("hp",-12);ch("uy",-4);return "Quân bạn thua trận, bạn bị thương."}),o("Chiêu an (-50 lạng)",()=>{s.money-=50;ch("uy",3);return "Bạn dùng lễ nghĩa chiêu hàng bọn giặc."})],()=>off()&&s.rank>=2),
+q(22,75,2,"Một quan lớn gửi lễ vật, ngầm nhờ bạn làm ngơ việc trái phép.",[o("Nhận lễ",()=>{s.money+=150;ch("liem",-8);return "Bạn nhận 150 lạng bạc."}),o("Từ chối, trả lại",()=>{ch("liem",5);ch("sung",-2);return "Quan lớn ghi hận trong lòng."})],off),
+q(25,75,2,"Triều đình ra lệnh tăng thuế.",[o("Thu đúng lệnh",()=>{ch("sung",3);ch("uy",-5);return "Triều đình hài lòng, dân thì oán."}),o("Giảm nhẹ cho dân",()=>{ch("uy",6);ch("sung",-5);ch("liem",2);return "Dân mang ơn, triều đình trách phạt."}),o("Thu thêm bỏ túi",()=>{s.money+=250;ch("liem",-12);ch("uy",-8);return "Bạn thu thêm 250 lạng cho riêng mình."})],off),
+q(30,75,2,"Vua triệu bạn vào hỏi ý kiến về quốc sự.",[o("Tâu thẳng điều thật",()=>{if(p(.5)){ch("sung",8);ch("uy",6);return "Vua khen bạn là bậc trung thần. 👑"}ch("sung",-10);return "Lời thật làm vua phật ý."}),o("Nịnh bợ cho vừa lòng vua",()=>{ch("sung",5);ch("liem",-4);return "Vua rất đẹp lòng."})],()=>off()&&s.rank>=4),
+q(28,75,2,"Có kẻ gièm pha bạn trước triều.",[o("Dâng sớ biện bạch",()=>{if(p(.3+s.uy/200)){ch("sung",3);return "Vua tin lời bạn."}ch("sung",-6);return "Lời biện bạch không thấu tới vua."}),o("Dâng lễ cho kẻ gièm (-100 lạng)",()=>{s.money-=100;ch("liem",-3);return "Chuyện được xí xóa."}),o("Mặc kệ",()=>{ch("uy",-3);return "Tiếng xấu lan dần."})],()=>off()&&s.rank>=3),
+q(25,80,3,"Ngự sử đài đàn hặc bạn tham nhũng, tội danh rành rành!",[o("Hối lộ ngự sử (-200 lạng)",()=>{s.money-=200;ch("liem",-3);return p(.7)?"Việc được dập đi.":fall("Hối lộ bại lộ, bạn bị cách chức! ⛓️")}),o("Nhận tội, nộp phạt (-100 lạng)",()=>{s.money-=100;ch("sung",-6);ch("uy",-6);return "Bạn nộp phạt và giữ được chức."}),o("Dâng sớ cãi lại",()=>p(.35+s.uy/200)?(ch("uy",4),"Sớ của bạn thuyết phục được vua."):fall("Vua không tin, bạn bị cách chức!"))],()=>off()&&s.liem<45),
+q(30,70,.8,"Giặc ngoại xâm tràn qua biên giới, triều đình họp bàn đối sách.",[o("Xin cầm quân ra trận",()=>{if(p(.4+s.uy/200)){ch("uy",15);ch("sung",10);return "Bạn đại thắng, tên tuổi lưu sử sách! 🏯"}ch("hp",-30);ch("uy",-8);return "Bạn bại trận, may thoát chết."}),o("Chủ trương nghị hòa",()=>{ch("sung",-2);ch("uy",-2);return "Triều đình tạm yên."}),o("Lo việc lương thảo",()=>{ch("uy",5);ch("sung",3);return "Bạn góp công hậu cần."})],()=>off()&&s.rank>=3),
+q(35,70,.8,"Phe cánh quyền thần trong triều lôi kéo bạn về phe mình.",[o("Theo phe quyền thần",()=>{ch("sung",8);ch("liem",-6);s.money+=100;return "Bạn được che chở, bổng lộc tăng."}),o("Giữ mình trung lập",()=>{ch("uy",2);return "Bạn đứng ngoài cuộc."}),o("Công khai chống lại",()=>p(.4)?(ch("uy",12),ch("sung",5),"Bạn thắng thế, được trọng vọng."):fall("Bạn bị trù dập và cách chức."))],()=>off()&&s.rank>=3),
+q(58,80,3,()=>RT[s.path||"quan"][0],[{get l(){return RT[s.path||"quan"][1]},f:()=>{s.ret=1;s.wt=0;return RT[s.path||"quan"][2]}},{get l(){return RT[s.path||"quan"][3]},f:()=>{ch("hp",-5);ch("uy",2);return RT[s.path||"quan"][4]}}],svc),
+u(20,75,1.5,"Lũ lụt phá đê, bạn tận lực cứu dân. 🌊",()=>{ch("uy",6);ch("hp",-5)},off),
+u(25,75,2,"Bạn lao lực việc quan, ngã bệnh nặng.",()=>ch("hp",-10),off),
+u(30,80,.6,"Vua băng hà, tân vương lên ngôi, triều đình xáo trộn. 🕯️",()=>{s.sung=ri(20,70)},off),
+u(30,80,.8,"Dân lập sinh từ thờ bạn, tên tuổi lan khắp vùng. ⛩️",()=>{ch("uy",3);ch("sung",2)},()=>off()&&s.uy>=75),
+u(25,80,3,"Vua nổi giận vì bạn mất lòng, hạ chiếu bắt giam. ⛓️",()=>{if(p(.5))return fall("Bạn bị cách chức và lưu đày.");die("bị xử trảm vì tội khi quân, cả họ bị tru di cửu tộc")},()=>off()&&s.sung<=15),
+q(12,40,1.5,"Một đạo sĩ ẩn cư trên núi mời bạn học phép dưỡng sinh.",[o("Học phép khí công",()=>{s.ds="khi";ch("hp",3);return "Bạn học cách thở và luyện quyền. 🥋"}),o("Xin bài thuốc bổ (-30 lạng)",()=>{s.money-=30;s.ds="thuoc";ch("hp",2);return "Bạn mang về bài thuốc bổ của đạo sĩ. 🌿"}),o("Từ chối, mải đèn sách",()=>{ch("hoc",2);return "Bạn quay về với sách vở."})]),
+u(10,30,2,"Mùa đông rét buốt, bạn đọc sách thâu đêm nên bị cảm lạnh.",()=>{ch("hp",-5);ch("hoc",2)}),
+q(16,45,1.5,"Bạn bè rủ đi hội làng, uống rượu thi thơ.",[o("Đi cùng bạn bè",()=>{ch("uy",3);ch("hoc",2);ch("hp",-3);return "Bạn làm được vài bài thơ hay, nhưng mệt vì rượu."}),o("Ở nhà đọc sách",()=>{ch("hoc",3);return "Bạn miệt mài đèn sách."})]),
+q(25,70,1.5,"Một người bạn cũ tặng bạn một củ sâm quý.",[o("Dùng ngay",()=>{ch("hp",10);return "Bạn thấy người khỏe hẳn ra. 🌿"}),o("Biếu bậc trưởng bối",()=>{ch("uy",3);ch("liem",2);return "Bậc trưởng bối vui lòng khen bạn hiếu thảo."}),o("Bán lấy bạc",()=>{s.money+=150;return "Bạn bán được 150 lạng."})]),
+q(30,70,1.5,"Bạn mắc chứng phong thấp, mỗi khi trở trời lại đau nhức.",[o("Châm cứu (-30 lạng)",()=>{s.money-=30;ch("hp",6);return "Thầy lang châm cứu, bạn bớt đau."}),o("Ngâm thuốc bắc (-40 lạng)",()=>{s.money-=40;ch("hp",8);return "Bạn ngâm thuốc đều đặn, bệnh thuyên giảm."}),o("Cắn răng chịu đựng",()=>{ch("hp",-4);return "Bệnh ngày một nặng thêm."})]),
+q(25,70,1,()=>(s.f?"Chồng con":"Vợ con")+" bạn ngã bệnh, bạn lo lắng không yên.",[o("Mời thầy lang giỏi (-60 lạng)",()=>{s.money-=60;ch("hp",-1);return "Thầy lang chữa khỏi bệnh cho cả nhà."}),o("Tự chăm sóc, thức trắng đêm",()=>{ch("hp",-6);return "Gia đình qua khỏi nhưng bạn kiệt sức."})],()=>s.wife||s.kids>0),
+u(40,80,1.5,"Bạn dậy sớm tập thở trong vườn sau, lòng thư thái. 🍃",()=>ch("hp",3),()=>s.ds),
+q(25,75,2,"Một thương nhân xin bạn cho buôn muối, hứa trả hậu.",[o("Chuẩn y theo đúng phép",()=>{ch("uy",2);s.money+=60;return "Bạn thu thuế hợp lệ 60 lạng."}),o("Nhận bạc, cho buôn lậu",()=>{s.money+=180;ch("liem",-9);return "Bạn nhận 180 lạng bạc."}),o("Cấm hẳn",()=>{ch("liem",4);ch("sung",-1);return "Thương nhân thất vọng ra về."})],off),
+q(25,75,1.5,"Dân làng xin mở trường dạy chữ cho trẻ nhỏ.",[o("Quyên tiền xây trường (-80 lạng)",()=>{s.money-=80;ch("uy",7);ch("hoc",2);return "Trường học mọc lên, dân khen bạn hết lời. 🏫"}),o("Giao cho làng tự lo",()=>{ch("uy",1);return "Chuyện chẳng đi đến đâu."}),o("Lấy tiền công làm nhà riêng",()=>{s.money+=120;ch("liem",-8);ch("uy",-5);return "Bạn tư túi 120 lạng."})],()=>off()&&s.rank>=2),
+q(25,75,1.5,"Một nho sinh nghèo mang văn chương đến xin bạn chỉ giáo.",[o("Tiến cử, giúp đỡ",()=>{ch("uy",5);ch("liem",2);ch("hoc",2);return "Chàng nho sinh cảm kích, danh tiếng bạn lan xa."}),o("Nhận làm học trò, thu học phí",()=>{s.money+=60;ch("uy",2);return "Bạn thu 60 lạng học phí."}),o("Chê bai rồi đuổi đi",()=>{ch("uy",-3);return "Tiếng kiêu ngạo của bạn truyền đi."})],off),
+u(25,75,1.5,"Bạn vi hành thăm dân, thấy rõ nỗi khổ của họ.",()=>{ch("uy",3);ch("liem",1)},off),
+u(25,75,1.5,"Việc quan bận rộn, bạn ăn uống thất thường mấy tháng liền.",()=>ch("hp",-5),off),
+q(25,75,1.2,"Trong huyện xuất hiện dịch bệnh.",[o("Lập trạm thuốc cứu dân (-100 lạng)",()=>{s.money-=100;ch("uy",8);ch("hp",-3);return "Dịch được khống chế nhờ bạn."}),o("Cách ly các làng nhiễm bệnh",()=>{if(p(.6)){ch("uy",5);return "Dịch được dập tắt."}ch("uy",-4);return "Dịch lan rộng, dân oán thán."}),o("Bỏ đi lánh nạn",()=>{ch("uy",-12);ch("liem",-4);return "Dân lên án bạn là quan hèn nhát."})],()=>off()&&s.rank>=2),
+q(40,80,1.5,"Tiệc tùng liên miên nơi quan trường, rượu ngon bày đầy trước mặt.",[o("Từ chối rượu, dùng trà",()=>{ch("hp",2);ch("uy",1);return "Bạn giữ mình thanh đạm."}),o("Say sưa cho hợp lòng quan khách",()=>{ch("hp",-6);ch("sung",2);return "Bạn vui cùng quan khách nhưng hao tổn sức khỏe."})],off),
+q(30,75,1.2,"Sứ thần nước láng giềng sang triều, vua cử bạn tiếp đón.",[o("Đối đáp thơ phú với sứ thần",()=>{if(p(.4+s.hoc/200)){ch("uy",8);ch("sung",6);return "Sứ thần bái phục tài thơ của bạn. 📜"}ch("uy",-4);return "Bạn đối đáp lúng túng, mất thể diện."}),o("Tiếp đón theo đúng lễ nghi",()=>{ch("sung",2);return "Buổi tiếp đón diễn ra suôn sẻ."}),o("Cáo bệnh từ chối",()=>{ch("sung",-3);return "Vua không vui lòng."})],()=>off()&&s.rank>=3),
+q(25,60,2,()=>{tg=R(kd(c=>c.a>=6&&c.a<=14&&!c.sch));return "Con "+(tg.g?"trai":"gái")+" bạn là "+tg.n+" đã đến tuổi học chữ. Bạn tính sao?"},[o("Mời thầy đồ giỏi dạy riêng (-60 lạng)",()=>{s.money-=60;tg.hoc=cl(tg.hoc+15);tg.sch=1;return tg.n+" học hành tấn tới."}),o("Cho học ở trường làng",()=>{tg.hoc=cl(tg.hoc+6);tg.sch=1;return tg.n+" đi học cùng bạn bè trong làng."}),o("Cho ở nhà phụ việc",()=>{tg.hoc=cl(tg.hoc-3);tg.sch=1;s.money+=8;return tg.n+" phụ giúp việc nhà."})],()=>kd(c=>c.a>=6&&c.a<=14&&!c.sch).length>0),
+q(35,70,2,()=>{tg=R(kd(c=>c.a>=17&&c.a<=24&&!c.ex&&!c.out));return tg.n+" đã lớn, muốn nối nghiệp. Bạn định hướng cho con thế nào?"},[o("Cho theo đường khoa cử (-80 lạng)",()=>{s.money-=80;tg.ex=1;if(p(.2+tg.hoc/150+(tg.t=="chăm học"?.15:0))){tg.j="cử nhân";ch("uy",8);return "🏮 "+tg.n+" đỗ Cử nhân, nở mày nở mặt cho gia đình!"}tg.j="học trò";return tg.n+" thi trượt, đành chờ kỳ sau."}),o("Cho đi buôn (-50 lạng)",()=>{s.money-=50;tg.ex=1;tg.j="buôn bán";return tg.n+" theo nghề buôn bán."}),o("Cho ở nhà làm ruộng",()=>{tg.ex=1;tg.j="làm ruộng";return tg.n+" ở lại phụ giúp việc nhà."})],()=>kd(c=>c.a>=17&&c.a<=24&&!c.ex&&!c.out).length>0),
+q(40,75,2,()=>{tg=R(kd(c=>c.a>=18&&c.t=="ham chơi"&&!c.out));return "Con "+tg.n+" ham mê cờ bạc, chủ nợ kéo đến tận nhà."},[o("Trả nợ, răn dạy con (-80 lạng)",()=>{s.money-=80;if(p(.4)){tg.t="hiếu thảo";return tg.n+" hối hận, từ nay chăm chỉ làm ăn."}return "Con vẫn chứng nào tật nấy."}),o("Đuổi con ra khỏi nhà",()=>{tg.out=1;ch("uy",-2);return "Bạn đuổi "+tg.n+" đi, lòng nặng trĩu."}),o("Mặc kệ",()=>{s.money-=40;ch("uy",-3);return "Tiếng xấu của con ảnh hưởng đến bạn."})],()=>kd(c=>c.a>=18&&c.t=="ham chơi"&&!c.out).length>0),
+q(25,60,1.5,()=>{tg=R(kd(c=>c.a<=12));return "Con "+tg.n+" ốm nặng, sốt li bì."},[o("Mời thầy lang giỏi (-60 lạng)",()=>{s.money-=60;return tg.n+" khỏi bệnh sau mấy ngày."}),o("Cúng bái, chờ thầy lang làng",()=>{if(p(.55))return tg.n+" tự khỏi, cả nhà thở phào.";s.cl=s.cl.filter(c=>c!=tg);s.kids--;ch("hp",-6);return "💔 "+tg.n+" không qua khỏi. Bạn đau xót khôn nguôi."})],()=>kd(c=>c.a<=12).length>0),
+u(50,85,2,()=>{tg=R(kd(c=>c.a>=18&&c.t=="hiếu thảo"&&!c.out));return "Con "+tg.n+" túc trực bên giường, chăm sóc bạn lúc ốm đau. 🍵"},()=>ch("hp",6),()=>kd(c=>c.a>=18&&c.t=="hiếu thảo"&&!c.out).length>0),
+u(45,85,1.5,()=>{tg=R(kd(c=>c.a>=22&&!c.m&&!c.out));return "Con "+tg.n+" lập gia đình, bạn lo liệu đám cưới (-50 lạng). 🎎"},()=>{tg.m=1;s.money-=50;const n=ri(0,2);s.gk+=n;return n?"Nhà có thêm "+n+" cháu. 👶":""},()=>kd(c=>c.a>=22&&!c.m&&!c.out).length>0),
+q(20,60,1.5,"Có kẻ nghi bạn là phận nữ cải trang nam nhi, đem việc tâu lên.",[o("Thú thật với vua, xin khoan hồng",()=>p(.4+s.sung/250)?(ch("sung",5),ch("uy",10),s.disg=0,"Vua cảm phục tài năng, tha tội và cho bạn tiếp tục giữ chức. 👑"):fall("Vua nổi giận, bạn bị tước hết chức tước!")),o("Đút lót dập chuyện (-200 lạng)",()=>{s.money-=200;ch("liem",-4);return p(.7)?"Việc được dập đi.":fall("Việc bại lộ, bạn bị cách chức!")}),o("Cáo bệnh về quê ở ẩn",()=>{ch("uy",-3);return fall("Bạn lui về quê lánh mặt.")})],()=>off()&&s.disg),
+q(18,60,2,"Giặc cướp quấy phá vùng biên ải, bạn nhận lệnh dẹp loạn.",[o("Xông thẳng vào đánh",()=>{if(p(.3+s.hp/200)){ch("uy",8);ch("sung",4);return "Bạn đánh tan giặc, quân sĩ hết lòng tin phục. ⚔️"}ch("hp",-15);ch("uy",-4);return "Bạn bị phục kích, bị thương nặng."}),o("Dùng binh pháp, lập mưu phục kích",()=>{if(p(.35+s.hoc/200)){ch("uy",10);ch("sung",4);return "Mưu kế thành công, quân ta thắng lớn mà ít tổn thất. 🏹"}ch("hp",-8);return "Mưu bị lộ, bạn phải rút quân."}),o("Chiêu hàng (-40 lạng)",()=>{s.money-=40;ch("uy",3);return "Giặc xin quy thuận."})],vo),
+q(18,60,2,"Bạn được giao huấn luyện tân binh.",[o("Nghiêm khắc, luyện sát phép",()=>{ch("uy",4);ch("hp",-2);return "Đội quân của bạn tinh nhuệ hẳn lên."}),o("Hào phóng đãi ngộ (-30 lạng)",()=>{s.money-=30;ch("uy",6);return "Binh sĩ mến phục bạn."}),o("Bớt xén lương thực",()=>{s.money+=90;ch("liem",-8);ch("uy",-4);return "Bạn bỏ túi 90 lạng, lòng quân hậm hực."})],vo),
+q(28,70,1,"Giặc ngoại xâm tràn vào bờ cõi, bạn được cử làm tiên phong.",[o("Dẫn quân xung trận",()=>{if(p(.4+s.uy/200)){ch("uy",15);ch("sung",10);s.money+=200;return "Bạn đại phá quân giặc, được vua trọng thưởng 200 lạng. 🏯"}ch("hp",-30);ch("uy",-8);return "Bạn bại trận, may thoát chết."}),o("Cố thủ giữ thành",()=>{ch("uy",3);ch("sung",2);return "Bạn giữ vững thành trì."}),o("Xin ở lại hậu phương",()=>{ch("sung",-3);ch("uy",-5);return "Quân sĩ xì xào bàn tán."})],()=>vo()&&s.rank>=3),
+q(25,70,1.5,"Quan văn trong triều dèm pha, cho rằng tướng võ kiêu căng.",[o("Dâng sớ biện bạch",()=>{if(p(.4+s.uy/200)){ch("sung",4);return "Vua tin lời bạn."}ch("sung",-5);return "Triều đình càng nghi ngờ bạn."}),o("Nhún nhường, tránh mặt",()=>{ch("uy",-2);ch("sung",2);return "Bạn lặng lẽ nhượng bộ."}),o("Dùng quân công đòi công bằng",()=>{if(p(.4)){ch("sung",5);ch("uy",6);return "Quân công của bạn khiến triều đình phải nể."}ch("sung",-8);return "Bạn bị cho là cậy công mà ngạo mạn."})],()=>vo()&&s.rank>=2),
+u(18,60,2,"Bạn bị thương nặng trong một trận mạc. 🩸",()=>ch("hp",-14),vo),
+q(25,70,1.5,"Thuộc hạ lập công lớn, xin bạn tâu thưởng.",[o("Thưởng hậu từ túi riêng (-60 lạng)",()=>{s.money-=60;ch("uy",5);return "Binh sĩ nguyện chết vì bạn."}),o("Cướp công về mình",()=>{ch("sung",3);ch("uy",-6);ch("liem",-5);return "Bạn được vua khen nhưng bị thuộc hạ oán."}),o("Dâng tấu xin triều đình ban thưởng",()=>{ch("uy",4);ch("sung",1);return "Thuộc hạ biết ơn bạn."})],vo),
+q(35,70,.8,"Có tin quyền thần mưu phản, binh quyền đang nằm trong tay bạn.",[o("Dâng tấu báo vua",()=>{ch("sung",8);ch("uy",5);return "Bạn được vua tin cậy hơn nữa."}),o("Án binh bất động",()=>{ch("sung",-3);return "Bạn đứng ngoài cuộc."}),o("Theo phe mưu phản",()=>{if(p(.4)){ch("sung",12);ch("uy",-8);s.money+=300;return "Phe bạn thắng thế, bạn được trọng thưởng 300 lạng."}die("bị xử tử vì tội phản nghịch, cả họ bị tru di cửu tộc")})],()=>vo()&&s.rank>=5),
+q(18,70,2,"Bạn nhập một lô lụa quý, thương lái đồn rằng giá sắp tăng vọt.",[o("Dốc vốn mua thật nhiều",()=>{if(p(.5)){const m=ri(150,500);s.money+=m;return "Giá tăng đúng như đồn, bạn lãi "+m+" lạng! 📈"}const m=ri(100,300);s.money-=m;return "Giá sụt, bạn lỗ "+m+" lạng. 📉"}),o("Mua vừa phải",()=>{const m=ri(30,90);s.money+=m;return "Bạn lãi chắc "+m+" lạng."}),o("Không mua",()=>"Bạn thận trọng bỏ qua.")],tr),
+q(18,70,2,"Thuyền hàng của bạn sắp ra khơi, nghe tin cướp biển rình rập.",[o("Thuê hộ vệ (-80 lạng)",()=>{s.money-=80;ch("uy",2);return "Chuyến hàng an toàn trở về."}),o("Cứ đi liều",()=>{if(p(.6)){const m=ri(150,350);s.money+=m;return "May mắn trót lọt, bạn lãi "+m+" lạng."}const m=ri(150,300);s.money-=m;ch("hp",-5);return "Thuyền bị cướp, bạn mất "+m+" lạng."})],tr),
+q(18,70,2,"Quan thuế đòi nộp thêm tiền, nếu không sẽ làm khó hàng của bạn.",[o("Nộp thêm (-60 lạng)",()=>{s.money-=60;return "Bạn nộp tiền cho yên chuyện."}),o("Đút lót nặng để được miễn thuế (-120 lạng)",()=>{s.money-=120;ch("liem",-4);return "Từ nay hàng của bạn được thông thương."}),o("Kiện lên quan trên",()=>{if(p(.4)){ch("uy",6);return "Quan trên xử bạn thắng kiện. ⚖️"}s.money-=150;return "Bạn thua kiện, mất thêm 150 lạng."})],tr),
+q(20,70,1.5,"Một bạn hàng lớn quỵt nợ bạn.",[o("Kiện ra quan (-50 lạng)",()=>{s.money-=50;if(p(.5)){s.money+=200;return "Bạn đòi lại được 200 lạng."}return "Quan xử mãi không xong."}),o("Thuê người đến đòi",()=>{if(p(.5)){s.money+=200;ch("liem",-6);return "Đòi được nợ nhưng tiếng xấu đồn xa."}ch("uy",-4);return "Chuyện vỡ lở, bạn mang tiếng côn đồ."}),o("Cho qua",()=>{ch("uy",2);return "Bạn bỏ qua, coi như bài học."})],tr),
+q(20,70,1.5,"Có người rủ góp vốn buôn lớn với thương nhân nước ngoài.",[o("Góp 300 lạng",()=>{s.money-=300;if(p(.5)){s.money+=800;return "Thương vụ thành công, bạn thu về 800 lạng! 🚢"}return "Thương vụ đổ bể, bạn mất 300 lạng."}),o("Từ chối",()=>"Bạn không mạo hiểm.")],()=>tr()&&s.money>=300),
+u(18,70,2,"Hàng hóa bán chạy suốt mùa lễ hội. 🎊",()=>{s.money+=ri(80,250)},tr),
+u(18,70,1,"Kho hàng của bạn bị cháy. 🔥",()=>{s.money-=ri(100,300);ch("hp",-3)},tr),
+q(30,70,1,"Triều đình muốn mua lô hàng quân nhu của bạn với giá rẻ.",[o("Bán đúng giá triều đình",()=>{ch("uy",6);ch("liem",2);return "Bạn được tiếng là thương nhân trọng nghĩa."}),o("Hét giá cao",()=>{s.money+=250;ch("liem",-6);return "Bạn lãi thêm 250 lạng."}),o("Khéo léo từ chối",()=>"Bạn nhẹ nhàng thoái thác.")],()=>tr()&&s.rank>=4),
+q(18,70,2,"Một người bệnh nặng được khiêng đến nhà bạn, gia cảnh nghèo khó.",[o("Chữa miễn phí, tận tâm",()=>{s.money-=20;ch("uy",6);ch("liem",2);return "Cả vùng đều biết tiếng bạn là thầy thuốc có tâm. 🌿"}),o("Chữa nhưng thu đủ tiền",()=>{s.money+=60;return "Bạn thu 60 lạng tiền thuốc."}),o("Từ chối vì họ không có tiền",()=>{ch("liem",-4);ch("uy",-4);return "Tiếng xấu đồn đi khắp nơi."})],yy),
+q(20,70,2,"Trong vùng bùng phát một loại dịch bệnh lạ.",[o("Pha thuốc cứu dân",()=>{ch("uy",8);if(p(.3)){ch("hp",-12);return "Dịch được khống chế nhờ bạn, nhưng bạn cũng nhiễm bệnh."}return "Dịch được khống chế nhờ thuốc của bạn."}),o("Đóng cửa tự bảo vệ mình",()=>{ch("uy",-3);return "Bạn tránh được dịch nhưng mang tiếng."}),o("Bán thuốc giá cắt cổ",()=>{s.money+=250;ch("liem",-8);ch("uy",-5);return "Bạn bỏ túi 250 lạng trên nỗi đau của dân."})],yy),
+q(25,70,1.5,"Bạn tìm thấy một cây thuốc quý trên núi.",[o("Dùng bồi bổ cho bản thân",()=>{ch("hp",10);return "Bạn thấy người khỏe hẳn ra. 🌿"}),o("Bào chế thuốc cứu người",()=>{ch("uy",5);ch("hoc",3);return "Phương thuốc mới của bạn cứu được nhiều người."}),o("Bán cho nhà giàu",()=>{s.money+=200;return "Bạn bán được 200 lạng."})],yy),
+q(30,70,1.5,"Một thầy lang khác ganh tị, đồn rằng bạn chữa chết người.",[o("Mời quan đến xét xử",()=>{if(p(.5+s.uy/250)){ch("uy",6);return "Quan xét rõ trắng đen, danh tiếng bạn được minh oan."}ch("uy",-8);return "Lời đồn khiến bệnh nhân thưa dần."}),o("Tự đứng ra cải chính với dân",()=>{ch("uy",2);return "Dân làng tin lời bạn."}),o("Bỏ đi nơi khác (-30 lạng)",()=>{s.money-=30;ch("uy",-3);return "Bạn dời đến vùng đất mới."})],yy),
+q(35,70,1.2,"Một vị quan lớn mắc bệnh hiểm nghèo, cho mời bạn đến chẩn trị.",[o("Dốc hết tâm sức chữa trị",()=>{if(p(.35+s.hoc/200)){s.money+=300;ch("uy",8);return "Quan lớn khỏi bệnh, hậu tạ bạn 300 lạng. 🙏"}ch("uy",-6);return "Bệnh quá nặng, bạn chữa không khỏi và mang tiếng."}),o("Từ chối vì sợ liên lụy",()=>{ch("uy",-2);return "Bạn khéo léo thoái thác."})],()=>yy()&&s.rank>=3),
+u(20,70,2,"Bạn miệt mài đọc y thư, y thuật tinh tiến thêm. 📖",()=>ch("hoc",4),yy),
+u(30,75,1.5,"Bạn tự bốc thuốc điều dưỡng, thân thể khỏe ra. 🍃",()=>ch("hp",5),yy),
+q(40,75,1,"Triều đình mời bạn vào Thái y viện.",[o("Nhận lời vào cung",()=>{s.rank=Math.max(s.rank,5);s.yr=0;ch("uy",5);return "Bạn trở thành "+RK[s.rank]+" trong cung. 🏯"}),o("Từ chối, ở lại cứu dân",()=>{ch("uy",6);return "Dân gian càng kính trọng bạn."})],()=>yy()&&s.rank>=3&&s.rank<5),
+q(40,75,1,"Vua lâm bệnh nặng, bạn được lệnh bốc thuốc.",[o("Dùng phương thuốc chắc ăn",()=>{if(p(.5+s.hoc/250)){s.money+=300;ch("uy",8);return "Vua bình phục, ban thưởng cho bạn 300 lạng. 👑"}ch("uy",-8);return "Bệnh vua chưa thuyên giảm, bạn bị quở trách."}),o("Thử phương thuốc mạnh liều lĩnh",()=>{if(p(.4)){s.money+=600;ch("uy",15);return "Vua khỏi hẳn, bạn được ban thưởng 600 lạng! 🌟"}die("bị khép tội vì thuốc không hiệu nghiệm")})],()=>yy()&&s.rank>=5),
+q(20,70,2,"Một học trò nghèo xin theo học, không có tiền học phí.",[o("Nhận dạy miễn phí",()=>{ch("uy",6);ch("liem",2);ch("hoc",2);return "Cậu học trò nguyện ghi nhớ ơn thầy."}),o("Thu một nửa học phí",()=>{s.money+=30;ch("uy",2);return "Bạn thu 30 lạng."}),o("Từ chối",()=>{ch("liem",-3);return "Cậu bé buồn bã ra về."})],nh),
+u(25,75,2,"Học trò của bạn đỗ cao trong kỳ thi Hương, danh tiếng thầy lan xa. 🏮",()=>{ch("uy",8);ch("hoc",2)},nh),
+q(25,70,1.5,"Bạn viết xong một bộ sách, thợ in xin khắc ván để bán.",[o("Cho khắc in",()=>{s.money+=120;ch("uy",8);ch("hoc",3);return "Sách của bạn được nhiều người tìm đọc. 📚"}),o("Giữ làm bản gia truyền",()=>{ch("hoc",2);ch("liem",1);return "Bạn giữ sách cho con cháu."}),o("Sửa chữa thêm lần nữa",()=>{ch("hoc",5);ch("hp",-3);return "Bạn thức khuya sửa từng chữ."})],nh),
+q(30,70,1.5,"Một quan lớn đến thăm, khuyên bạn ra làm quan giúp nước.",[o("Từ chối, giữ chí ẩn dật",()=>{ch("uy",10);ch("liem",4);return "Danh tiếng thanh cao của bạn càng vang xa."}),o("Nhận lời ra làm quan",()=>{s.path="quan";setP();s.rank=3;s.deg=Math.max(s.deg,2);s.yr=0;return "Bạn rời quê, nhậm chức "+RK[3]+". 🏯"}),o("Hẹn khi khác",()=>{ch("uy",1);return "Quan lớn mỉm cười ra về."})],()=>nh()&&s.rank>=2),
+q(30,75,1,"Hội thơ văn: nhiều danh sĩ tụ họp ngâm vịnh, đối đáp.",[o("Dự thi đối thơ",()=>{if(p(.35+s.hoc/200)){ch("uy",10);ch("hoc",3);return "Bài thơ của bạn được cả hội tán thưởng. 📜"}ch("uy",-3);return "Bạn đối đáp chưa chỉnh, hơi mất mặt."}),o("Ngồi xem, học hỏi",()=>{ch("hoc",2);return "Bạn học được nhiều điều hay."})],nh),
+q(30,75,1,"Một kẻ quyền thế muốn mua chuộc bạn viết bài ca ngợi hắn.",[o("Viết theo ý hắn",()=>{s.money+=200;ch("liem",-8);ch("uy",-5);return "Bạn nhận 200 lạng, nhưng thấy xấu hổ với lương tâm."}),o("Thẳng thừng từ chối",()=>{ch("uy",5);ch("liem",3);if(p(.4)){s.money-=100;return "Hắn trả đũa khiến bạn tổn thất 100 lạng."}return "Tiếng thanh cao của bạn càng thêm vang."})],nh),
+u(25,75,1.5,"Mùa đông, bạn sưởi lửa, nhâm nhi trà và đọc thơ cùng bạn hữu. 🍵",()=>{ch("hp",3);ch("hoc",2)},nh),
+u(40,80,1,"Học trò khắp nơi lập đền tưởng niệm, tôn bạn làm bậc tông sư.",()=>ch("uy",8),()=>nh()&&s.rank>=5),
+q(18,60,2,"Bạn thấy một nhà giàu bóc lột nông dân tàn nhẫn.",[o("Cướp của nhà giàu chia cho dân",()=>{s.money+=60;s.wt++;ch("uy",8);return "Dân làng tôn bạn là nghĩa hiệp, nhưng quan phủ để mắt tới bạn. 🗡️"}),o("Báo quan xử trị",()=>{ch("uy",2);return "Quan xử nhà giàu nhẹ tay."}),o("Làm ngơ",()=>{ch("uy",-2);return "Bạn lặng lẽ bỏ đi."})],hk),
+q(18,60,2,"Quan quân lần theo dấu vết, tìm đến nơi bạn ẩn náu.",[o("Chống trả",()=>{if(p(.4+s.hp/250)){ch("uy",6);return "Bạn đánh lui quan quân."}ch("hp",-15);s.wt++;return "Bạn bị thương và càng bị truy lùng."}),o("Trốn sang vùng khác (-50 lạng)",()=>{s.money-=50;s.wt=Math.max(0,s.wt-1);return "Bạn cao chạy xa bay."}),o("Đút lót quan (-120 lạng)",()=>{s.money-=120;s.wt=Math.max(0,s.wt-1);return "Quan phủ tạm bỏ qua cho bạn."})],()=>hk()&&s.wt>=1),
+u(20,70,3,"Quan quân bao vây tứ phía, bạn bị bắt và đem ra xử chém. ⚔️",()=>{die("bị quan quân bắt và xử chém")},()=>hk()&&s.wt>=5),
+q(20,60,2,"Nhiều người cùng cảnh bần cùng xin theo bạn làm nghĩa sĩ.",[o("Thu nhận hết (-40 lạng)",()=>{s.money-=40;ch("uy",6);return "Đoàn người theo bạn thêm đông."}),o("Chọn lọc những người giỏi",()=>{ch("uy",3);ch("hoc",2);return "Bạn lập nên một nhóm tinh nhuệ."}),o("Từ chối",()=>{ch("uy",-1);return "Bạn quen sống một mình."})],hk),
+q(22,60,1.5,"Một bang hội giang hồ thách đấu bạn.",[o("Nhận lời đấu",()=>{if(p(.35+s.hp/200)){ch("uy",10);s.money+=100;return "Bạn thắng và thu phục cả bang hội. 🥋"}ch("hp",-18);ch("uy",-4);return "Bạn thua và bị thương nặng."}),o("Mời rượu giảng hòa (-30 lạng)",()=>{s.money-=30;ch("uy",4);return "Hai bên kết nghĩa anh em. 🍶"}),o("Bỏ đi",()=>{ch("uy",-3);return "Giang hồ cười chê bạn nhát gan."})],hk),
+q(25,60,1,"Triều đình ngỏ ý chiêu an, phong chức cho bạn.",[o("Nhận chiêu an, làm võ tướng",()=>{s.path="vo";setP();s.rank=3;s.yr=0;s.wt=0;return "Bạn từ bỏ giang hồ, nhận chức "+RK[3]+". ⚔️"}),o("Từ chối, tiếp tục giang hồ",()=>{ch("uy",5);s.wt++;return "Bạn tiếp tục con đường của mình."})],()=>hk()&&s.rank>=3),
+u(18,60,2,"Bạn luyện kiếm dưới trăng, võ nghệ tiến bộ. 🗡️",()=>{ch("hp",3);ch("uy",1)},hk),
+q(30,60,1,"Nạn đói hoành hành, dân chúng nổi dậy chống quan và tôn bạn làm thủ lĩnh.",[o("Dựng cờ khởi nghĩa",()=>{if(p(.35+s.uy/250)){ch("uy",15);return pro()}ch("hp",-25);s.wt+=2;return "Cuộc khởi nghĩa thất bại, bạn phải chạy trốn."}),o("Khuyên dân chờ thời",()=>{ch("uy",3);return "Bạn giữ lực lượng chờ cơ hội."})],()=>hk()&&s.rank>=4&&s.rank<7),
+u(25,60,1.5,"Bạn chia chiến lợi phẩm cho anh em, ai nấy mến phục. 🍶",()=>{ch("uy",4);s.money-=30},hk),
+q(8,45,2,()=>{cn=nf("thay");return cn.l+" "+cn.n+" gọi bạn đến, muốn chỉ dạy thêm đôi điều."},[o("Chăm chú lắng nghe",()=>{ch("hoc",4);bond(cn,4);return cn.n+" hài lòng, truyền thêm tâm đắc cho bạn."}),o("Biếu lễ vật (-30 lạng)",()=>{s.money-=30;ch("hoc",2);bond(cn,8);return cn.n+" cảm kích tấm lòng của bạn."}),o("Cãi lại thầy",()=>{ch("uy",-2);bond(cn,-10);return cn.n+" thất vọng về bạn."})],()=>nf("thay")),
+q(15,60,2,()=>{cn=nf("ban");return "Bạn thân "+cn.n+" gặp khó khăn, đến xin bạn vay tiền."},[o("Cho vay 80 lạng",()=>{s.money-=80;bond(cn,10);return cn.n+" cảm động, hứa sẽ không quên ơn bạn."}),o("Cho vay nửa số (-40 lạng)",()=>{s.money-=40;bond(cn,4);return cn.n+" cảm ơn và hiểu cho bạn."}),o("Từ chối",()=>{bond(cn,-8);return cn.n+" buồn bã ra về."})],()=>nf("ban")),
+u(20,70,2,()=>{cn=nf("ban");return cn.n+", người bạn thân của bạn, ghé thăm và giúp bạn lúc khó khăn. 🤝"},()=>{const m=ri(80,200);s.money+=m;bond(cn,3);return "Bạn nhận được "+m+" lạng từ tình bằng hữu."},()=>nf("ban")&&nf("ban").v>=40),
+q(20,60,2,()=>{cn=nf("dich");return "Đối thủ "+cn.n+" tung tin đồn bôi nhọ bạn."},[o("Đối đầu thẳng thắn",()=>{if(p(.5)){ch("uy",5);bond(cn,-5);return "Bạn phản bác khiến lời đồn tan biến."}ch("uy",-4);bond(cn,-8);return "Lời đồn lan nhanh hơn bạn nghĩ."}),o("Nhún nhường hòa giải",()=>{if(p(.4)){bond(cn,15);return cn.n+" cảm thấy hổ thẹn, dịu thái độ."}ch("uy",-2);return cn.n+" càng lấn tới."}),o("Âm thầm trả đũa",()=>{ch("liem",-5);bond(cn,-10);return "Bạn bày mưu khiến "+cn.n+" mất mặt."})],()=>nf("dich")&&nf("dich").v<30),
+u(25,65,2,()=>{cn=nf("dich");return cn.n+" ngầm hãm hại bạn khi bạn sơ ý. 🗡️"},()=>{ch("uy",-6);s.money-=100;ch("hp",-4);bond(cn,-3);return "Bạn tổn hại danh tiếng và mất 100 lạng."},()=>nf("dich")&&nf("dich").v<=-20),
+u(30,70,1.5,()=>{cn=nf("dich");return "Hiềm khích xưa tan biến, "+cn.n+" trở thành tri kỷ của bạn. 🍶"},()=>{cn.r="ban";cn.l="bạn tri kỷ";cn.v=60;ch("uy",3)},()=>nf("dich")&&nf("dich").v>=40),
+q(20,65,2,()=>{cn=nf("quy");return cn.l+" "+cn.n+" mời bạn dự một buổi tiệc."},[o("Đến dự, mang quà (-40 lạng)",()=>{s.money-=40;bond(cn,8);ch("uy",2);return "Bạn được "+cn.n+" ưu ái."}),o("Đến dự tay không",()=>{bond(cn,3);return "Bạn ngồi dự tiệc cho phải phép."}),o("Từ chối",()=>{bond(cn,-6);return cn.n+" hơi phật ý."})],()=>nf("quy")),
+q(25,65,1.5,()=>{cn=nf("quy");return cn.l+" "+cn.n+" ngỏ ý tiến cử bạn lên vị trí cao hơn."},[o("Nhận lời, cảm tạ",()=>{bond(cn,3);if(p(.7))return pro();return "Việc tiến cử chưa thành, bạn đành chờ thời cơ."}),o("Khiêm tốn từ chối",()=>{ch("uy",5);bond(cn,2);return "Bạn được khen là người biết giữ mình."})],()=>svc()&&s.rank<7&&nf("quy")&&nf("quy").v>=40),
+q(20,70,2,()=>{cn=nf("phoi");return "Bạn đời của bạn, "+cn.n+", muốn cùng bạn đi dạo, trò chuyện."},[o("Đồng hành cả ngày",()=>{ch("hp",2);bond(cn,8);return "Hai người có một ngày thật ấm áp. 🌸"}),o("Tặng quà nhỏ (-20 lạng)",()=>{s.money-=20;bond(cn,10);return cn.n+" mỉm cười hạnh phúc."}),o("Bận việc không đi",()=>{bond(cn,-8);return cn.n+" lặng lẽ quay đi."})],()=>nf("phoi")),
+q(25,70,1.5,()=>{cn=nf("phoi");return "Giữa bạn và "+cn.n+" ngày càng bất hòa."},[o("Hàn gắn (-60 lạng)",()=>{s.money-=60;bond(cn,15);return "Hai người ngồi lại nói chuyện, tình cảm ấm dần."}),o("Ly hôn",()=>{s.wife=null;s.npc=s.npc.filter(x=>x!=cn);ch("uy",-4);return "Bạn và "+cn.n+" đường ai nấy đi. 💔"}),o("Mặc kệ",()=>{bond(cn,-10);return "Khoảng cách giữa hai người càng xa."})],()=>nf("phoi")&&nf("phoi").v<-10),
+q(18,35,2,()=>s.f?"Nhà trai mang mâm lễ trầu cau đến dạm ngõ xin cưới bạn.":"Nhà gái ra giá thách cưới: mâm lễ trầu cau, heo, rượu và vài tấm lụa.",[o("Chấp thuận hôn sự",()=>{s.money+=s.f?60:-100;wed(40);ch("uy",2);return "Hai nhà bái lạy gia tiên, lễ cưới thành. 🎎"}),o("Xin thương lượng lễ vật",()=>{if(p(.5)){s.money+=s.f?100:-50;wed(30);return "Hai bên thuận mua vừa bán, lễ cưới thành công."}ch("uy",-2);return "Nhà bên kia phật ý, chuyện hôn sự tan vỡ."}),o("Từ chối, chờ duyên đến",()=>{ch("uy",-1);return "Bạn từ chối khéo."})],()=>!s.wife),
+q(16,28,2,"Cha mẹ đã sắp đặt hôn sự cho bạn với con nhà môn đăng hộ đối, dù bạn chưa từng gặp mặt.",[o("Nghe lời cha mẹ",()=>{wed(20);s.money+=100;ch("uy",3);return "Bạn thành thân theo ý cha mẹ, nhận thêm 100 lạng hồi môn."}),o("Xin được gặp mặt trước",()=>{if(p(.5)){wed(35);return "Hai người gặp nhau, thấy hợp ý và nên duyên."}ch("uy",-2);return "Cha mẹ giận vì bạn cãi lời, hôn sự dang dở."}),o("Bỏ trốn theo tiếng gọi con tim",()=>{if(p(.5)){wed(55);ch("uy",-4);return "Bạn lấy được người mình thương, dù mang tiếng cãi cha mẹ. 💞"}s.money-=50;ch("uy",-6);return "Bạn bị gia đình từ mặt."})],()=>!s.wife&&par().length>0),
+q(18,50,1.5,"Cả nhà làm lễ đầy tháng cho đứa con mới sinh.",[o("Mổ heo, mời cả làng (-80 lạng)",()=>{s.money-=80;ch("uy",3);return "Cả làng đến chúc mừng, ai cũng vui."}),o("Làm mâm cơm đơn giản (-20 lạng)",()=>{s.money-=20;return "Gia đình sum họp ấm cúng."})],()=>kd(c=>c.a<=1).length>0),
+q(10,80,2,"Đầu xuân, cả nhà đi lễ chùa cầu bình an. 🙏",[o("Dâng lễ lớn (-30 lạng)",()=>{s.money-=30;ch("hp",3);ch("uy",1);return "Lòng bạn thanh thản, như được thần Phật che chở."}),o("Dâng lễ nhỏ, xin lộc đầu năm",()=>{ch("hp",1);return "Bạn xin được cành lộc đầu xuân."}),o("Không đi",()=>"Bạn ở nhà, năm mới vẫn bình lặng.")]),
+q(12,80,1.5,"Bạn xin một quẻ xăm đầu năm. 🎋",[o("Xin quẻ công danh",()=>{if(p(.4)){ch("uy",4);return "Quẻ thượng thượng, công danh sẽ rộng mở."}if(p(.5)){ch("uy",-2);return "Quẻ hạ, bạn hơi lo lắng."}return "Quẻ trung bình, chẳng tốt chẳng xấu."}),o("Xin quẻ sức khỏe",()=>{if(p(.4)){ch("hp",4);return "Quẻ thượng, bạn thấy người khỏe ra."}if(p(.5)){ch("hp",-3);return "Quẻ hạ, bạn thấy mệt mỏi."}return "Quẻ trung bình."}),o("Xin quẻ tiền tài",()=>{if(p(.4)){s.money+=80;return "Quẻ thượng, bạn gặp may nhỏ, được 80 lạng."}if(p(.5)){s.money-=40;return "Quẻ hạ, bạn hao tài 40 lạng."}return "Quẻ trung bình."})]),
+q(15,80,1.5,"Thầy tướng số xem tử vi và bảo năm nay bạn gặp hạn. 🔮",[o("Làm lễ giải hạn (-60 lạng)",()=>{s.money-=60;ch("hp",2);return "Bạn cúng giải hạn, lòng yên tâm hơn."}),o("Mặc kệ, không tin",()=>{if(p(.3)){ch("hp",-10);return "Năm đó bạn đổ bệnh, đúng như thầy bói nói."}return "Cả năm bình yên, lời thầy bói chẳng ứng."}),o("Tin sái cổ, ở nhà cả năm",()=>{ch("uy",-2);ch("hp",1);return "Bạn đóng cửa tránh hạn, bỏ lỡ nhiều việc."})]),
+q(14,50,2,"Làng mở hội xuân, có đấu vật, cờ người và chọi gà. 🎪",[o("Xuống sân đấu vật",()=>{if(p(.35+s.hp/200)){ch("uy",6);s.money+=40;return "Bạn thắng giải đấu vật, cả làng reo hò."}ch("hp",-10);return "Bạn thua và bị ê ẩm cả người."}),o("Ra đánh cờ người",()=>{if(p(.3+s.hoc/200)){ch("uy",5);ch("hoc",1);return "Bạn bày thế cờ khéo, thắng liền mấy ván."}ch("uy",-1);return "Bạn thua cờ, hơi ngượng."}),o("Cược chọi gà (-80 lạng)",()=>{ch("liem",-1);if(p(.45)){s.money+=120;return "Gà của bạn thắng, bạn lãi 120 lạng."}s.money-=80;return "Gà thua, bạn mất 80 lạng."}),o("Chỉ đứng xem hội",()=>{ch("hp",1);return "Bạn thong thả ngắm cảnh hội xuân."})]),
+q(18,50,1.2,"Giặc ngoại xâm tràn vào bờ cõi, triều đình hạ chiếu chiêu mộ quân.",[o("Tòng quân cứu nước",()=>{if(p(.12))return die("tử trận nơi sa trường");ch("hp",-10);ch("uy",12);return "Bạn đánh giặc dũng cảm, tên tuổi được dân làng truyền tụng. ⚔️"}),o("Quyên góp lương thực (-100 lạng)",()=>{s.money-=100;ch("uy",5);return "Bạn góp lương thực nuôi quân."}),o("Đưa gia đình đi lánh nạn",()=>{s.money-=80;ch("uy",-5);return "Cả nhà tạm lánh về vùng yên ổn."})],()=>!vo()),
+q(25,70,.6,"Triều đại thay đổi, vua mới lên ngôi, triều đình đảo lộn.",[o("Theo triều mới",()=>{s.sung=ri(30,70);ch("liem",-5);return "Bạn quy phục triều mới để giữ chức."}),o("Treo ấn từ quan, về quê",()=>{s.ret=1;ch("uy",5);return "Bạn treo ấn từ quan, về quê ở ẩn."}),o("Trung thành với triều cũ",()=>{if(p(.5)){ch("uy",12);return "Khí tiết của bạn được người đời kính trọng."}return fall("Bạn bị triều mới cách chức vì trung thành với triều cũ.")})],off),
+u(25,70,.5,"Triều đại thay đổi, luật lệ và thuế khóa đảo lộn, làm ăn khó khăn một thời gian.",()=>{s.money-=100;ch("uy",-1)},()=>!off()&&s.age>=25),
+q(20,60,.8,"Đất nước loạn lạc, các sứ quân nổi lên chia cắt, vùng bạn sống bị cát cứ.",[o("Theo một sứ quân",()=>{s.money+=150;ch("uy",-2);ch("liem",-4);return "Bạn nhận bổng lộc của sứ quân nhưng mang tiếng."}),o("Dựng thế lực giữ làng",()=>{if(p(.45+s.uy/250)){ch("uy",10);s.money+=100;return "Bạn dựng được thế lực, bảo vệ cả làng."}ch("hp",-20);s.money-=100;return "Thế lực non yếu bị đánh tan, bạn thiệt hại nặng."}),o("Chạy loạn (-120 lạng)",()=>{s.money-=120;ch("uy",-3);return "Bạn bỏ quê đi tránh loạn."})]),
+q(25,70,1.5,"Một kỳ án được đưa lên công đường: người chồng bị tố đầu độc vợ, nhưng chứng cứ mâu thuẫn.",[o("Cho điều tra kỹ lưỡng",()=>{if(p(.4+s.hoc/200)){ch("uy",10);ch("liem",3);return "Bạn tìm ra chân tướng, minh oan cho người vô tội. ⚖️"}ch("uy",-3);return "Vụ án kéo dài mà chưa rõ thực hư."}),o("Xử nhanh theo lời khai",()=>{if(p(.5))return "Vụ án khép lại êm thấm.";ch("uy",-8);return "Bạn xử oan người vô tội, dân bất bình."}),o("Nhận bạc nhà quyền thế, xử cho họ thắng",()=>{s.money+=200;ch("liem",-10);ch("uy",-6);return "Bạn bỏ túi 200 lạng, lòng nặng trĩu."})],()=>off()&&s.rank>=2),
+q(25,70,1.2,"Hai người đàn bà cùng nhận một đứa trẻ là con mình, tranh nhau trước công đường.",[o("Giả vờ chia đôi đứa trẻ để thử lòng",()=>{if(p(.6+s.hoc/300)){ch("uy",12);return "Người mẹ thật lập tức nhường con, bạn xử án sáng suốt. 👶"}ch("uy",-4);return "Mẹo của bạn không ai tin, án treo mãi."}),o("Hỏi han hàng xóm làm chứng",()=>{ch("uy",4);return "Bạn dựa vào lời chứng mà phân xử."}),o("Xử bừa cho xong",()=>{ch("uy",-8);return "Bạn xử cẩu thả, dân bàn tán."})],()=>off()&&s.rank>=2),
+q(18,60,1.5,"Gia tộc họp bàn việc lớn: tu sửa từ đường và sắm lại đồ tế tự.",[o("Đứng ra lo liệu chính (-150 lạng)",()=>{s.money-=150;s.cn.p=Math.min(100,s.cn.p+8);ch("uy",5);return "Từ đường được tu sửa khang trang, cả họ tôn bạn."}),o("Góp một chút phần (-30 lạng)",()=>{s.money-=30;s.cn.p=Math.min(100,s.cn.p+2);return "Bạn góp phần nhỏ, cả họ ghi nhận."}),o("Vắng mặt",()=>{s.cn.p=Math.max(0,s.cn.p-3);ch("uy",-3);return "Tộc nhân bàn tán về sự vắng mặt của bạn."})]),
+q(20,65,1.5,"Một anh em họ nghèo khó đến xin bạn giúp đỡ.",[o("Cho vay (-80 lạng)",()=>{s.money-=80;s.cn.p=Math.min(100,s.cn.p+3);return "Anh họ cảm kích, họ hàng đều khen bạn."}),o("Từ chối",()=>{s.cn.p=Math.max(0,s.cn.p-2);ch("uy",-2);return "Tiếng bạn ruồng bỏ họ hàng lan ra."})]),
+q(25,60,.7,"Một người trong họ bị tố mưu phản, triều đình đang truy xét. Chuyện có thể liên lụy cả dòng họ!",[o("Dâng sớ tố giác sớm, đại nghĩa diệt thân",()=>{ch("uy",6);s.cn.p=Math.max(0,s.cn.p-10);return "Bạn được tha liên đới nhưng họ hàng oán hận."}),o("Bỏ tiền chạy tội cho cả họ (-300 lạng)",()=>{s.money-=300;if(p(.6))return "Bạn chạy chọt thành công, cả họ thoát nạn.";return die("bị liên lụy, cả họ bị tru di cửu tộc")}),o("Che giấu, cho người trốn đi",()=>{if(p(.5)){s.cn.p=Math.max(0,s.cn.p-5);return "Người ấy trốn thoát, chuyện tạm yên."}return die("tội che giấu phản nghịch, cả họ bị tru di cửu tộc")})]),
+q(16,32,2,()=>"Trưởng họ "+(s.cn.m.find(m=>m.r=="trưởng họ")||{n:"họ ta"}).n+" đứng ra mai mối cho bạn một mối hôn sự môn đăng hộ đối.",[o("Nghe theo trưởng họ",()=>{wed(35);s.money+=Math.round(ri(50,200)*(1+s.cn.p/100));s.cn.p=Math.min(100,s.cn.p+2);return "Hai họ kết thông gia, nhận hồi môn hậu hĩnh. 🎎"}),o("Xin được tự chọn người",()=>{ch("uy",-1);return "Trưởng họ nhíu mày nhưng cho bạn thời gian."}),o("Cưới người ngoài họ nghèo",()=>{wed(60);s.cn.p=Math.max(0,s.cn.p-5);ch("uy",-2);return "Bạn cưới người mình thương, gia tộc không hài lòng. 💞"})],()=>s.cn&&!s.wife),
+u(30,75,1.5,"Gia tộc mở tiệc mừng bạn thành đạt, cả họ nở mày nở mặt. 🎊",()=>{s.cn.p=Math.min(100,s.cn.p+6);ch("uy",3);s.money-=40},()=>s.cn&&s.rank>=3),
+q(18,70,2,"Mùa gặt đến, lúa chín vàng nhưng trời báo sắp có bão.",[o("Gặt gấp suốt đêm",()=>{ch("hp",-4);if(p(.7)){const m=gain(80,200);s.money+=m;return "Bạn gặt kịp trước bão, thu "+m+" lạng. 🌾"}const m=gain(30,80);s.money-=m;return "Bão đến sớm, bạn mất "+m+" lạng."}),o("Thuê thêm người gặt (-50 lạng)",()=>{s.money-=50;const m=gain(100,220);s.money+=m;return "Lúa được gặt kịp, bạn thu "+m+" lạng."}),o("Chờ xem trời",()=>{if(p(.5)){const m=gain(80,160);s.money+=m;return "Bão lạc hướng, bạn thu "+m+" lạng."}const m=gain(60,140);s.money-=m;return "Bão đổ bộ, lúa chìm trong nước, bạn mất "+m+" lạng."})],nn),
+q(18,70,1.5,"Đại hạn kéo dài, ruộng đồng nứt nẻ.",[o("Đào mương dẫn nước (-60 lạng)",()=>{s.money-=60;ch("uy",4);return "Mương nước cứu được cả xóm."}),o("Cầu mưa theo tục làng (-20 lạng)",()=>{s.money-=20;if(p(.4)){const m=gain(60,140);s.money+=m;return "Trời đổ mưa đúng lúc, bạn thu "+m+" lạng."}ch("hp",-3);return "Cầu mưa chẳng ứng, mùa màng thất bát."}),o("Bán bớt ruộng cầm cự",()=>{s.money+=250;ch("uy",-3);return "Bạn bán bớt ruộng lấy 250 lạng, lòng xót xa."})],nn),
+q(20,65,1.5,"Một địa chủ trong vùng ép bạn bán ruộng với giá rẻ.",[o("Cự tuyệt thẳng thừng",()=>{ch("uy",5);if(p(.4)){ch("hp",-8);return "Bạn giữ được ruộng nhưng bị người của hắn đánh."}return "Hắn đành bỏ qua."}),o("Bán ruộng lấy tiền",()=>{s.money+=180;ch("uy",-3);return "Bạn bán ruộng lấy 180 lạng."}),o("Kiện lên quan",()=>{if(p(.4)){ch("uy",8);return "Quan xử bạn thắng kiện. ⚖️"}s.money-=100;return "Bạn thua kiện, mất 100 lạng."})],nn),
+q(18,60,1.2,"Có người mách bạn một giống lúa mới cho năng suất cao.",[o("Thử giống mới",()=>{if(p(.6)){const m=gain(60,160);s.money+=m;ch("hoc",2);return "Giống mới cho bội thu, bạn lãi "+m+" lạng."}s.money-=50;return "Giống mới không hợp đất, bạn mất 50 lạng."}),o("Giữ giống cũ",()=>"Bạn giữ nếp canh tác xưa.")],nn),
+u(18,70,2,"Mưa thuận gió hòa, được mùa lớn. 🌾",()=>{s.money+=gain(100,250)},nn),
+u(18,70,1,"Giặc châu chấu cắn phá ruộng, thiệt hại nặng. 🦗",()=>{s.money-=gain(60,150)},nn),
+q(18,70,1.5,"Làng xin đóng góp xây đình, đắp đê.",[o("Góp nhiều (-80 lạng)",()=>{s.money-=80;ch("uy",7);return "Cả làng ghi ơn bạn."}),o("Góp ít (-20 lạng)",()=>{s.money-=20;ch("uy",1);return "Bạn góp chút phần cho phải phép."}),o("Từ chối",()=>{ch("uy",-4);return "Dân làng xì xào bàn tán."})],nn),
+q(18,70,2,"Một khách sộp đặt làm món đồ khó, đòi hỏi tay nghề cao.",[o("Dốc hết tay nghề",()=>{if(p(.4+s.hoc/250)){const m=gain(150,300);s.money+=m;ch("uy",5);ch("hoc",2);return "Tác phẩm khiến khách trầm trồ, bạn thu "+m+" lạng. 🔨"}s.money-=50;ch("uy",-2);return "Món đồ bị hỏng, bạn mất 50 lạng vật liệu."}),o("Làm qua loa cho xong",()=>{const m=gain(60,100);s.money+=m;ch("uy",-3);return "Bạn thu "+m+" lạng nhưng mang tiếng làm ẩu."}),o("Từ chối khéo",()=>"Bạn không dám nhận việc quá sức.")],cg),
+q(18,70,1.5,"Một chàng trai trẻ xin theo học nghề của bạn.",[o("Nhận dạy tận tâm",()=>{ch("uy",4);ch("hoc",1);return "Bạn truyền nghề không giấu giếm."}),o("Nhận nhưng thu học phí",()=>{s.money+=60;return "Bạn thu 60 lạng học phí."}),o("Giấu nghề, không dạy",()=>{ch("uy",-2);return "Bạn giữ bí quyết cho riêng mình."})],cg),
+q(25,70,1.2,"Quan phủ trưng dụng xưởng của bạn làm đồ cho triều đình.",[o("Nhận lệnh",()=>{const m=gain(100,200);s.money+=m;ch("hp",-3);ch("uy",3);return "Bạn hoàn thành đơn của triều đình, thu "+m+" lạng."}),o("Viện cớ từ chối",()=>{ch("uy",-4);if(p(.3)){s.money-=80;return "Quan phủ phạt bạn 80 lạng."}return "Quan phủ tạm bỏ qua."})],cg),
+u(18,70,1.5,"Mẻ lò nung hỏng, thiệt hại nặng. 🔥",()=>{s.money-=gain(60,150)},cg),
+u(18,70,2,"Nghề của bạn được chợ ưa chuộng, đơn hàng đầy tay. 🎉",()=>{s.money+=gain(80,220)},cg),
+q(25,70,1.2,"Bạn nghĩ ra một kiểu dáng mới, đối thủ muốn mua lại bí quyết.",[o("Bán bí quyết",()=>{s.money+=300;ch("uy",-2);return "Bạn bán bí quyết lấy 300 lạng."}),o("Giữ độc quyền",()=>{ch("uy",6);ch("hoc",2);return "Kiểu dáng của bạn nổi danh khắp vùng."}),o("Truyền cho phường thợ",()=>{ch("uy",8);ch("liem",2);return "Cả phường thợ ghi nhớ công lao của bạn."})],cg),
+q(20,65,1.5,()=>{tg=R(s.cn.m.filter(m=>/ruột/.test(m.r)&&m.a>=18));return "Người "+tg.r+" "+tg.n+" gặp khó khăn, đến xin bạn giúp đỡ."},[o("Giúp đỡ (-100 lạng)",()=>{s.money-=100;s.cn.p=Math.min(100,s.cn.p+3);return "Tình ruột thịt keo sơn, "+tg.n+" cảm kích khôn xiết."}),o("Từ chối",()=>{s.cn.p=Math.max(0,s.cn.p-3);ch("uy",-2);return "Anh chị em ruột xa cách vì bạn từ chối."})],()=>s.cn&&s.cn.m.some(m=>/ruột/.test(m.r)&&m.a>=18)),
+q(25,70,1.2,"Cha mẹ đã khuất, anh chị em ruột tranh nhau chia gia sản.",[o("Nhường phần mình (-100 lạng)",()=>{s.cn.inh=1;s.money-=100;ch("uy",5);s.cn.p=Math.min(100,s.cn.p+3);return "Anh em cảm động, hòa thuận trở lại."}),o("Chia đều theo lẽ công bằng",()=>{s.cn.inh=1;s.cn.p=Math.min(100,s.cn.p+1);return "Gia sản được chia đều, ai cũng chấp nhận."}),o("Tranh phần hơn",()=>{s.cn.inh=1;s.money+=150;ch("uy",-5);s.cn.p=Math.max(0,s.cn.p-5);return "Bạn được thêm 150 lạng nhưng anh em ly tán."})],()=>s.cn&&!par().length&&!s.cn.inh&&s.cn.m.some(m=>/ruột/.test(m.r)&&m.a>=18))
+,
+q(10,80,1.5,"Một vị sư già khất thực trước cửa nhà bạn. 🙏",[o("Cúng dường (-20 lạng)",()=>{s.money-=20;dk(4);return "Vị sư chắp tay chúc phúc cho cả nhà. ☯️"}),o("Làm ngơ",()=>"Vị sư lặng lẽ bước đi.")]),
+u(18,80,1.5,"Phúc đức dày, bạn tình cờ tránh được một tai nạn. 🍀",()=>ch("hp",3),()=>(s.duc||0)>=30),
+u(18,80,1.5,"Điều dữ liên tiếp ập đến, người ta bảo đó là nghiệp báo.",()=>{ch("hp",-5);s.money-=60},()=>(s.duc||0)<=-30)
+
+,
+q(18,60,2,"Rét đậm rét hại kéo dài, cái lạnh thấu xương.",[o("Sắm chăn áo ấm, củi sưởi (-30 lạng)",()=>{s.money-=30;ch("hp",1);return "Cả nhà qua mùa đông ấm áp."}),o("Chịu rét cho đỡ tốn",()=>{if(p(.5)){ch("hp",-8);return "Bạn nhiễm lạnh, ốm mất mấy tuần."}return "Bạn gắng gượng qua được mùa đông."})]),
+u(18,70,2,"Nắng nóng oi bức kéo dài, ai nấy rã rời. ☀️",()=>ch("hp",-4)),
+q(10,70,1.5,"Dịch bệnh lan khắp vùng, người ốm ngày một nhiều. 😷",[o("Đóng cửa tránh dịch (-20 lạng)",()=>{s.money-=20;if(p(.8))return "Cả nhà tránh được dịch.";ch("hp",-8);return "Dịch vẫn len vào, bạn đổ bệnh."}),o("Lên chùa cầu an (-10 lạng)",()=>{s.money-=10;dk(2);return "Bạn thắp hương cầu an, lòng bớt lo. ☯️"}),o("Mặc kệ, cứ đi làm",()=>{if(p(.4)){ch("hp",-15);return "Bạn nhiễm bệnh nặng."}return "Bạn may mắn không bị dịch."})]),
+q(18,55,2,"Triều đình trưng tập dân phu đi lao dịch đắp đê, xây thành.",[o("Đi lao dịch",()=>{ch("hp",-8);ch("uy",2);return "Bạn đi lao dịch, vất vả nhưng làm tròn bổn phận."}),o("Nộp tiền thay thế (-80 lạng)",()=>{s.money-=80;return "Bạn nộp tiền để khỏi đi lao dịch."}),o("Trốn lao dịch",()=>{if(p(.5))return "Bạn trốn thoát được.";s.money-=100;ch("uy",-5);return "Bạn bị bắt, phạt 100 lạng và mang tiếng."})],()=>!off()),
+q(18,65,1.5,"Quan phủ thúc thuế điền và tô tức mùa này rất nặng.",[o("Nộp đủ",()=>{s.money-=120;return "Bạn nộp đủ thuế, yên ổn làm ăn."}),o("Xin khất, giảm bớt",()=>{if(p(.5)){s.money-=50;return "Quan phủ châm chước, bạn chỉ phải nộp 50 lạng."}s.money-=150;ch("uy",-2);return "Xin không được, bạn phải nộp thêm."}),o("Giấu bớt ruộng không khai",()=>{ch("liem",-4);if(p(.5)){s.money+=60;return "Bạn trót lọt, để dành được 60 lạng."}s.money-=250;return "Bị bắt quả tang, bạn bị phạt 250 lạng."})],nn),
+q(18,70,1.5,"Đoàn thuyền hàng đi đường bộ, nghe tin cướp cạn rình rập.",[o("Thuê thêm người hộ tống (-70 lạng)",()=>{s.money-=70;return "Đoàn hàng đi bình an."}),o("Đi liều",()=>{if(p(.6)){const m=gain(80,200);s.money+=m;return "Trót lọt, bạn lãi "+m+" lạng."}const m=gain(100,200);s.money-=m;ch("hp",-6);return "Bị cướp cạn chặn đường, bạn mất "+m+" lạng."})],tr),
+q(30,65,1.2,"Triều đình ban một quyết sách sai lầm làm khổ dân. Bạn có nên dâng sớ can gián?",[o("Dâng sớ can gián",()=>{if(p(.5)){ch("uy",12);ch("sung",3);return "Lời can của bạn được nghe theo, dân gian cảm phục. 📜"}return fall("Sớ can gián chọc giận vua, bạn bị bãi quan!")}),o("Im lặng bảo toàn thân",()=>{ch("uy",-4);ch("liem",-2);return "Bạn im lặng, lòng nặng trĩu."}),o("Xin nghỉ bệnh tránh việc",()=>{ch("sung",-2);return "Bạn cáo bệnh nghỉ mấy tháng."})],()=>off()&&s.rank>=3)
+
+,
+q(25,70,1.2,()=>R(["Triều đình có chiến sự biên giới, vua xuống chiếu kêu gọi nhà giàu quyên góp quân lương.","Đê vỡ, quan tỉnh thu thuế đặc biệt để cứu tế và tu bổ đê điều."]),[o("Quyên góp (15% tiền mặt)",()=>{const m=Math.round(Math.max(0,s.money)*.15);s.money-=m;ch("uy",8);dk(3);return "Bạn đóng "+m+" lạng, được triều đình ghi nhận."}),o("Từ chối đóng bạc",()=>{ch("uy",-15);dk(-20);return "Bạn từ chối, tiếng bủn xỉn và ích kỷ lan khắp nơi."})],()=>s.money>=500),
+q(25,70,1,"Triều đình mở lệ quyên nạp: nhà giàu quyên góp cứu tế được ban hàm quan danh dự.",[o("Quyên 1.000 lạng",()=>{s.money-=1000;s.mc=1;s.dh="Hàm Cửu phẩm danh dự";ch("uy",15);dk(4);return "Bạn được ban hàm Cửu phẩm danh dự, người đời nể trọng hơn hẳn. 🎖️"}),o("Quyên 3.000 lạng",()=>{if(s.money<3000){s.money-=1000;s.mc=1;s.dh="Hàm Cửu phẩm danh dự";ch("uy",15);dk(4);return "Không đủ bạc, bạn chỉ quyên 1.000 lạng và nhận hàm Cửu phẩm danh dự."}s.money-=3000;s.mc=1;s.dh="Hàm Tứ phẩm danh dự";ch("uy",30);dk(8);if(s.cn)s.cn.p=Math.min(100,s.cn.p+8);return "Bạn được ban hàm Tứ phẩm danh dự, cả họ nở mày nở mặt. 🎖️"}),o("Từ chối",()=>"Bạn không màng danh hão.")],()=>!off()&&s.money>=1000&&!s.mc),
+q(30,70,1.5,"Có kẻ dâng sớ vu oan bạn, vụ án đang được triều đình xét xử.",[o("Đút lót chạy án (-500 lạng)",()=>{if(s.money<500)return jail("Không đủ bạc chạy án");s.money-=500;ch("liem",-3);return "Bạc đến tay đại thần, vụ án được dập tắt."}),o("Tự biện bạch",()=>{if(p(.4+s.uy/250)){ch("uy",8);return "Lời biện bạch của bạn minh bạch, vụ án được lật lại."}return jail("Biện bạch bất thành")}),o("Nhận tội xin giảm nhẹ",()=>{ch("uy",-10);s.money-=200;return fall("Bạn nhận tội, bị bãi chức và nộp phạt 200 lạng.")})],()=>off()&&s.rank>=4)
+
+];
+function wed(b){s.wife=R(s.f?MAN:WN);addN("phoi",s.f?"chồng":"vợ","dan",!s.f,b+Math.round(((s.dm||50)-50)/10),s.wife)}
+const QH=[
+["Tứ thư gồm những sách nào?","Luận ngữ, Đại học, Trung dung, Mạnh Tử","Kinh Thi, Kinh Thư, Kinh Dịch, Kinh Lễ","Luận ngữ, Đạo đức kinh, Trang Tử, Tôn Tử","Đại học, Xuân Thu, Mạnh Tử, Kinh Thi"],
+["Ngũ thường của đạo Nho gồm những gì?","Nhân, Lễ, Nghĩa, Trí, Tín","Nhân, Nghĩa, Lễ, Dũng, Hiếu","Trung, Hiếu, Tiết, Nghĩa, Liêm","Nhân, Trí, Dũng, Liêm, Sỉ"],
+["Câu “Dân vi quý, xã tắc thứ chi, quân vi khinh” là lời của ai?","Mạnh Tử","Khổng Tử","Lão Tử","Hàn Phi Tử"],
+["Ai đã chỉ huy trận Bạch Đằng năm 938, đánh tan quân Nam Hán?","Ngô Quyền","Đinh Bộ Lĩnh","Lê Hoàn","Lý Thường Kiệt"],
+["Bài thơ “Nam quốc sơn hà” gắn với cuộc kháng chiến nào?","Chống quân Tống thời Lý","Chống quân Nguyên Mông thời Trần","Khởi nghĩa Lam Sơn","Khởi nghĩa Tây Sơn"],
+["Ai là tác giả của “Bình Ngô đại cáo”?","Nguyễn Trãi","Trần Hưng Đạo","Lê Thánh Tông","Nguyễn Du"],
+["Khoa thi đầu tiên của nước ta được mở năm 1075 dưới triều vua nào?","Lý Nhân Tông","Lý Thái Tổ","Trần Thái Tông","Lê Thánh Tông"],
+["Văn Miếu được lập đầu tiên ở Thăng Long dưới triều nào?","Nhà Lý","Nhà Trần","Nhà Lê sơ","Nhà Nguyễn"],
+["Tam cương là ba mối quan hệ nào?","Vua – tôi, cha – con, chồng – vợ","Cha – con, anh – em, bạn bè","Vua – tôi, thầy – trò, bạn bè","Chồng – vợ, anh – em, thầy – trò"],
+["Năm 1010, vua Lý Công Uẩn làm việc trọng đại gì?","Dời đô ra Thăng Long","Đánh thắng quân Tống","Lập Quốc Tử Giám","Mở khoa thi đầu tiên"]
+];
+const QR=[
+["Trong Ngũ kinh, sách nào bàn về lẽ biến hóa của âm dương?","Kinh Dịch","Kinh Thi","Kinh Thư","Kinh Lễ"],
+["Bộ sử biên niên “Xuân Thu” ghi chép lịch sử nước nào?","Nước Lỗ","Nước Tề","Nước Sở","Nước Tần"],
+["Vua Lê Thánh Tông cho ban hành bộ luật nào?","Quốc triều hình luật","Hình thư","Hoàng Việt luật lệ","Luật Gia Long"],
+["Chiến thắng Chi Lăng – Xương Giang thuộc cuộc khởi nghĩa nào?","Khởi nghĩa Lam Sơn","Khởi nghĩa Tây Sơn","Khởi nghĩa Hai Bà Trưng","Khởi nghĩa Mai Thúc Loan"],
+["Hội nghị Diên Hồng thời Trần bàn quyết việc gì?","Nên hòa hay nên đánh quân Nguyên","Nên dời đô hay không","Nên tăng hay giảm thuế","Nên lập ai làm thái tử"],
+["Ai là tác giả “Hịch tướng sĩ”?","Trần Quốc Tuấn","Trần Nhân Tông","Trương Hán Siêu","Phạm Ngũ Lão"]
+];
+const QD=[
+["Vua hỏi: muốn nước thịnh trị lâu dài, việc gì phải đặt lên hàng đầu?","Lấy dân làm gốc, giảm thuế, trọng người hiền tài","Tăng thuế để đầy kho nhà vua","Xây cung điện cho thêm oai nghiêm","Đóng cửa biên giới, cấm mọi giao thương"],
+["Vua hỏi: quan lại tham nhũng thì nên trị thế nào?","Luật nghiêm minh, thưởng người thanh liêm, phạt kẻ tham","Làm ngơ để quan yên tâm làm việc","Chỉ phạt dân thường","Đày hết quan lại đi xa"],
+["Vua hỏi: giặc ngoài đe dọa bờ cõi, kế sách thế nào?","Đoàn kết lòng dân, luyện quân, tùy thế mà đánh hay hòa","Cắt đất dâng giặc để yên thân","Bắt dân đóng góp vô hạn","Rút hết quân về kinh thành"]
+];
+const sh=a=>a.slice().sort(()=>Math.random()-.5);
+const VH=["Vòng 1 – Kinh nghĩa","Vòng 2 – Chiếu, chế, biểu","Vòng 3 – Thơ phú","Vòng 4 – Văn sách"],KH=["Kỳ 1 – Kinh nghĩa","Kỳ 2 – Chiếu, chế, biểu","Kỳ 3 – Văn sách"];
+function winH(){s.deg=2;s.hv="Cử nhân";ch("uy",8);if(s.rank<1){s.rank=1;s.yr=0}return "🏮 Bảng vàng đề tên! Bạn đỗ đủ 4 vòng, trở thành Cử nhân và được bổ làm Huấn đạo."}
+function tuTai(){s.deg=1;s.hv="Tú tài";ch("uy",3);return "Bạn đỗ 3 vòng, được công nhận Tú tài. Chưa được bổ làm quan nhưng có thể dạy học và dự thi tiếp."}
+function phoBang(){s.deg=3;s.hv="Phó bảng";ch("uy",6);s.rank=Math.max(s.rank,2);s.yr=0;return "📜 Bạn đỗ Phó bảng, được bổ làm "+RK[s.rank]+"."}
+function dinh(ok){const sc=s.hoc+(ok?35:0)+ri(0,45);let hv,r,u;
+if(sc>=165&&p(.7)){hv="Tiến sĩ cập đệ, Trạng nguyên";r=3;u=25}
+else if(sc>=150){hv="Tiến sĩ cập đệ, "+R(["Bảng nhãn","Thám hoa"]);r=3;u=22}
+else if(sc>=115){hv="Hoàng giáp";r=2;u=18}
+else{hv="Đồng tiến sĩ xuất thân";r=2;u=12}
+s.deg=3;s.hv=hv;ch("uy",u);s.rank=Math.max(s.rank,r);s.yr=0;
+return "🏆 Thi Đình xướng danh: bạn đỗ "+hv+"! Vua ban mũ áo vinh quy, bổ làm "+RK[s.rank]+"."}
+function fin(x){const t=x.ok;
+if(x.k=="h"){if(t>=4)return winH();if(t==3)return tuTai();ch("uy",-2);return "Bạn bị loại ở vòng "+(t+1)+", đành chờ ba năm nữa."}
+if(x.k=="r"){if(t==2)return phoBang();ch("uy",-2);return "Bạn trượt kỳ thi Hội, đành chờ khoa sau."}
+return dinh(t)}
+function qE(x){const [qt,c,...w]=x.qs[x.n];
+const op=sh([c,...w]).map(t=>o(t,()=>{const pass=t==c||p(s.hoc/220+s.hue/600);x.n++;if(pass)x.ok++;
+const m=t==c?"✅ Đúng rồi!":pass?"🤔 Bạn không chắc nhưng nhờ nền tảng vững vẫn qua được.":"❌ Sai. Đáp án là: "+c+".";
+const more=x.n<x.qs.length;
+if(pass&&more){L(m,"r");show(qE(x));return ""}
+if(pass&&x.k=="r"){L(m,"r");L("🏮 Bạn đỗ kỳ thi Hội, được vào thi Đình trước vua.","r");show(qE({k:"d",qs:[R(QD)],n:0,ok:0}));return ""}
+return m+" "+fin(x)}));
+const lb=x.k=="h"?"✍️ "+VH[x.n]+": ":x.k=="r"?"✍️ "+KH[x.n]+": ":"👑 Thi Đình, vua đích thân ra đề. ";
+return{t:lb+qt,o:op}}
+function examE(){const h=s.deg<2;
+const op=[o(h?"Vào trường thi Hương (4 vòng)":"Vào kinh dự thi Hội (3 kỳ), rồi thi Đình",()=>{show(qE(h?{k:"h",qs:sh(QH).slice(0,4),n:0,ok:0}:{k:"r",qs:sh(QR).slice(0,3),n:0,ok:0}))})];
+if(s.money>=100)op.push(o("Đút lót giám khảo (-100 lạng)",()=>{s.money-=100;ch("liem",-6);if(p(.2)){ch("uy",-12);return "Việc bại lộ, bạn bị phạt và mang tiếng xấu."}if(!p(Math.min(.95,s.hoc/250+.5)))return "Bạc mất mà vẫn trượt.";return h?winH():dinh(0)}));
+op.push(o("Bỏ kỳ này, ôn luyện thêm",()=>{ch("hoc",3);return "Bạn đóng cửa đọc sách."}));
+return{t:h?"Khoa thi Hương ba năm một lần đã đến. Thi 4 vòng: đỗ 3 vòng là Tú tài, đủ 4 vòng là Cử nhân.":"Khoa thi Hội tại kinh đô đã đến. Chỉ Cử nhân mới được dự. Đỗ Hội sẽ vào thi Đình trước mặt vua.",o:op}}
+function promoE(){if(s.path=="thuong")return tradeE();if(GR[s.path])return growE();const cost=100*s.rank;
+const op=[o("Dựa vào công trạng",()=>p(.15+(s.uy+s.sung)/250)?pro():(ch("sung",-1),"Chưa đến lượt bạn được xét."))];
+if(s.money>=cost)op.unshift(o("Chạy chọn, dâng lễ (-"+cost+" lạng)",()=>{s.money-=cost;ch("liem",-6);return p(.8)?pro():"Bạc đã mất mà chức chẳng thăng."}));
+return{t:s.path=="vo"?"Triều đình đang xét phong thưởng cho các tướng sĩ.":"Triều đình đang xét thăng chức cho các quan.",o:op}}
+function pick(){if(p(.2))return null;const ok=E.filter(e=>s.age>=e.a&&s.age<=e.b&&(!e.c||e.c()));let r=Math.random()*ok.reduce((x,e)=>x+e.w,0);for(const e of ok){if((r-=e.w)<0)return e}return null}
+function newGame(g){RK=LAD.quan;const f=kd0>=40?R([1,1,2,2,3,3]):kd0<=-40?R([0,0,0,0,1]):R([0,0,0,1,1,2,3]),F=FA[f];
+s={f:g,path:null,disg:0,wt:0,duc:Math.round(kd0/4),kq:[],di:1,npc:[],ia:1,gi:1,name:g?R(SN)+" Thị "+R(FN):R(SN)+" "+R(MN)+" "+R(GN),fam:f,age:0,hoc:F.hoc+ri(0,15),hue:cl(ri(25,90)+(F.hoc/3|0)),dm:ri(25,90),by:ri(0,59),as:[],rot:0,uy:F.uy+ri(0,5),liem:ri(45,75),hp:cl(ri(55,95)+(kd0>=40?5:kd0<=-40?-8:0)),sung:50,money:F.m,deg:0,rank:0,yr:0,wait:0,ret:0,ds:null,cl:[],gk:0,wife:null,kids:0,dead:0,log:[{h:0}]};
+s.cn=mkClan(s.name.split(" ")[0],f);s.ci=1;L("Bạn chào đời với tên "+s.name+", trong một "+F.n+", thuộc "+s.cn.n+".");if(kd0>=40)L("☸ Phúc đức kiếp trước che chở, bạn sinh ra trong cảnh sung túc hơn.","r");else if(kd0<=-40)L("☸ Nghiệp kiếp trước còn đeo bám, bạn sinh ra trong cảnh nghèo khó.","r");ev=null;render()}
+function save(){try{localStorage.setItem("quan",JSON.stringify(s))}catch(e){}}
+function load(){try{s=JSON.parse(localStorage.getItem("quan"));ev=null;s.cl=s.cl||[];s.gk=s.gk||0;s.log.forEach(x=>{delete x.ic});s.path=s.path||"quan";s.wt=s.wt||0;setP();if(!s.cn)s.cn=mkClan(s.name.split(" ")[0],s.fam||0);if(!s.cn.kin)addKin(s.cn,s.age);s.ci=1;s.di=1;s.duc=s.duc||0;s.kq=s.kq||[];s.hue=s.hue??ri(25,90);s.dm=s.dm??ri(25,90);s.by=s.by??ri(0,59);s.as=s.as||[];s.ia=1;s.gi=1;if(!s.npc){s.npc=[];if(s.age>=6)addN("thay","thầy đồ","nho",0,20);if(s.age>=19){addN("dich","đối thủ",s.path,0,-15);addN("quy",PR[s.path]||"quý nhân",s.path,0,25)}if(s.wife)addN("phoi",s.f?"chồng":"vợ","dan",!s.f,30,s.wife)}}catch(e){s=null}render()}
+function reset(){s=null;ev=null;render()}
+let tg=null;const kd=f=>s.cl.filter(f);
+let cn=null,tab="life",ex=false;function tgl(){ex=!ex;render()}
+const RT={quan:["Tuổi đã cao, bạn có nên dâng sớ xin cáo lão về quê?","Dâng sớ cáo lão","Vua chuẩn tấu, bạn về quê dưỡng già. 🌾","Tiếp tục phò vua","Bạn vẫn lo việc nước."],vo:["Tuổi cao sức yếu, bạn có nên xin giải ngũ, trả lại binh quyền?","Xin giải ngũ, trả binh quyền","Triều đình chuẩn tấu, bạn giải giáp quy điền. 🌾","Tiếp tục cầm quân","Bạn vẫn xông pha nơi trận mạc."],thuong:["Tuổi đã cao, bạn có nên giao lại cơ nghiệp cho người kế nghiệp?","Giao cơ nghiệp cho người kế nghiệp","Bạn trao lại cửa hiệu, chỉ còn hưởng chút lợi tức. 🌾","Tiếp tục tự tay buôn bán","Bạn vẫn tất bật với việc buôn bán."],y:["Tay run mắt mờ, bạn có nên gác nghề thầy thuốc, truyền lại y thuật cho đệ tử?","Gác nghề, truyền lại cho đệ tử","Bạn truyền y thuật cho đệ tử rồi sống đời nhàn tản. 🌿","Tiếp tục bốc thuốc cứu người","Bạn vẫn miệt mài bên những vị thuốc."],nho:["Tuổi đã cao, bạn có nên đóng cửa lớp, giao việc dạy học cho học trò?","Đóng cửa lớp, vui thú điền viên","Bạn giao lớp cho học trò lớn nhất, ở nhà đọc sách làm thơ. 🎋","Tiếp tục dạy học","Bạn vẫn đứng lớp mỗi sớm mai."],hiep:["Tuổi già sức yếu, bạn có nên rửa tay gác kiếm, rời chốn giang hồ?","Rửa tay gác kiếm","Bạn rửa tay gác kiếm, ẩn mình nơi thôn dã. 🌾","Vẫn lăn lộn giang hồ","Bạn vẫn xách kiếm ngao du."],nong:["Tuổi đã cao, bạn có nên chia ruộng đất cho con cháu và an hưởng tuổi già?","Chia ruộng cho con cháu","Bạn chia ruộng đất cho các con, an nhàn bên thềm nhà. 🌾","Tiếp tục ra đồng","Bạn vẫn lội ruộng mỗi sớm mai."],cong:["Tay run mắt kém, bạn có nên truyền nghề cho đệ tử và gác búa?","Truyền nghề, gác búa","Bạn truyền hết tay nghề cho đệ tử rồi nghỉ ngơi. 🔨","Tiếp tục làm nghề","Bạn vẫn miệt mài bên lò rèn."]};
+const TB=[["life","📜","Nhật ký"],["soc","👥","Giao tế"],["gig","💼","Kiếm thêm"],["asset","🏠","Tài sản"],["clan","🏯","Gia tộc"],["ds","☯️","Tu dưỡng"]];
+function tb(k){if(k=="ds")return dsE();tab=k;render()}
+const KIN=["cha","mẹ","anh ruột","chị ruột","em ruột"],par=()=>s.cn?s.cn.m.filter(x=>x.r=="cha"||x.r=="mẹ"):[];
+function addKin(c,age){const sn=c.sn,fa=age+ri(24,36),mo=age+ri(20,32);c.kin=1;
+if(fa<=85)c.m.push({n:sn+" "+R(MN)+" "+R(GN),g:0,a:fa,r:"cha"});
+if(mo<=85)c.m.push({n:R(SN)+" Thị "+R(FN),g:1,a:mo,r:"mẹ"});
+for(let i=ri(0,3);i>0;i--){const g=p(.5)?1:0,a=age==0?ri(1,12):Math.max(0,age+ri(-6,6));
+c.m.push({n:sn+(g?" Thị "+R(FN):" "+R(MN)+" "+R(GN)),g,a,r:a>age?(g?"chị ruột":"anh ruột"):"em ruột"})}}
+function karmaYear(){if(!s.kq||!s.kq.length)return;const due=s.kq.filter(k=>k.y<=s.age);if(!due.length)return;s.kq=s.kq.filter(k=>k.y>s.age);
+due.forEach(k=>{const w=k.c&&k.c.length>2?" “"+k.c+"”":"";
+if(k.g){L("🌸 Quả lành: năm xưa, trong chuyện"+w+", bạn đã làm điều thiện, nay được đền đáp.","r");const r=ri(0,2);
+if(r==0){s.money+=250;L("Một quý nhân phù trợ, bạn được 250 lạng.","r")}else if(r==1){ch("uy",8);s.money+=150;L("Người từng được bạn giúp tìm đến báo ơn, danh tiếng bạn thêm vang.","r")}else{ch("hp",10);L("Tai qua nạn khỏi, sức khỏe bạn khá lên rõ rệt.","r")}dk(2)}
+else{L("🔥 Quả báo: năm xưa, trong chuyện"+w+", bạn đã làm điều trái lương tâm, nay nghiệp tìm đến.","r");
+if((s.duc||0)>=40&&p(.6)){L("Nhờ phúc đức dày, bạn thoát được tai họa.","r");dk(-5)}
+else{const r=ri(0,3);if(r==3&&s.as.length){const x=R(s.as);s.as=s.as.filter(y=>y!=x);L("Của phi nghĩa chẳng giữ được lâu: "+x.n+" của bạn bị mất sạch.","r")}else if(r==0){ch("hp",-14);s.money-=150;L("Tai họa bất ngờ ập đến, bạn bệnh nặng và hao tài.","r")}else if(r==1){ch("uy",-10);if(off()&&p(.4))L(fall("Chuyện cũ bị phanh phui, bạn bị cách chức! ⛓️"),"r");else L("Chuyện cũ bị đồn ra, danh tiếng bạn sứt mẻ.","r")}else{ch("hp",-6);const sp=nf("phoi");if(sp)bond(sp,-15);L("Gia đạo bất yên, tình cảm trong nhà rạn nứt.","r")}dk(3)}}})}
+function mkClan(sn,f){const g=()=>sn+" "+R(MN)+" "+R(GN),w=()=>sn+" Thị "+R(FN);
+const c={n:"Họ "+sn,sn,p:Math.min(100,FA[f].uy*2+ri(20,45)),f:FA[f].m*2,m:[{n:g(),g:0,a:ri(58,72),r:"trưởng họ"},{n:g(),g:0,a:ri(40,55),r:"bác"},{n:g(),g:0,a:ri(35,50),r:"chú"},{n:w(),g:1,a:ri(30,45),r:"cô"},{n:g(),g:0,a:ri(10,25),r:"anh họ"},{n:w(),g:1,a:ri(5,20),r:"em họ"}]};addKin(c,0);return c}
+function clanYear(){const c=s.cn;if(!c)return;c.m.forEach(m=>m.a++);
+const pa=par().length,isP=m=>m.r=="cha"||m.r=="mẹ";
+const dead=c.m.filter(m=>(m.a>68&&p((m.a-68)/40))||(isP(m)&&p(.004)));
+dead.forEach(m=>{L("🕯️ "+m.r+" "+m.n+" qua đời, cả họ để tang.","r");if(isP(m)){s.money-=60;ch("hp",-3);ch("uy",1)}});
+if(dead.length)c.m=c.m.filter(m=>!dead.includes(m));
+if(pa&&!par().length&&s.age<18&&!c.orph){c.orph=1;L("😢 Bạn mồ côi cha mẹ, trưởng họ nhận về nuôi.","r");ch("hp",-3)}
+const el=c.m.filter(m=>!KIN.includes(m.r));
+if(el.length&&!c.m.some(m=>m.r=="trưởng họ")){const e=el.reduce((a,b)=>a.a>b.a?a:b);e.r="trưởng họ";L("🏯 "+e.n+" được cử làm trưởng họ.","r")}
+const mo=c.m.find(m=>m.r=="mẹ");
+if(mo&&mo.a<=40&&c.m.filter(m=>/ruột/.test(m.r)).length<4&&p(.12)){const g=p(.5)?1:0;c.m.push({n:c.sn+(g?" Thị "+R(FN):" "+R(MN)+" "+R(GN)),g,a:0,r:"em ruột"});L("👶 Nhà có thêm một "+(g?"em gái":"em trai")+" mới chào đời.","r")}
+if(s.age>20&&c.m.length<12&&p(.05)){const g=p(.5)?1:0;c.m.push({n:c.sn+(g?" Thị "+R(FN):" "+R(MN)+" "+R(GN)),g,a:0,r:"cháu họ"})}
+c.p=Math.max(0,Math.min(100,c.p+((s.duc||0)>=50?1:(s.duc||0)<=-30?-1:0)));c.f+=Math.round(c.p/10)+(c.rc||0)*20}
+function clanAct(k){if(ev||s.dead||!s.ci||!s.cn)return;const c=s.cn;let r;
+if(k==4&&(s.wife||s.age<16)){L("🏯 Bạn đã thành gia thất hoặc còn quá nhỏ để mai mối.","r");return done()}
+const CT={6:500,7:1000,8:2000};if(CT[k]&&s.money<CT[k]){L("🏯 Bạn không đủ bạc cho việc này.","r");return done()}
+s.ci=0;
+if(k==0){s.money-=100;c.f+=100;c.p=Math.min(100,c.p+3);ch("uy",2);r="Bạn góp 100 lạng vào quỹ họ, tộc nhân quý mến."}
+else if(k==1){s.money-=30;c.p=Math.min(100,c.p+2);ch("uy",1);r="Bạn dự lễ giỗ tổ, cúng từ đường đúng phép."}
+else if(k==2){s.money-=60;c.p=Math.min(100,c.p+4);ch("uy",3);r="Bạn giúp một tộc nhân nghèo, ai cũng khen."}
+else if(k==3){if(c.p>=40&&c.f>=100){c.f-=100;s.money+=150;r="Gia tộc trích quỹ họ giúp bạn 150 lạng."}else{ch("uy",-1);r="Quỹ họ eo hẹp hoặc danh vọng gia tộc chưa đủ để giúp bạn."}}
+else if(k==5){const ps=par();if(ps.length){s.money-=50;c.p=Math.min(100,c.p+2);ch("uy",2);ch("hp",2);r="Bạn phụng dưỡng "+ps.map(x=>x.r).join(" và ")+", trọn đạo hiếu. 🙏"}else{ch("uy",1);r="Cha mẹ đã khuất, bạn thắp hương trên bàn thờ tổ tiên."}}
+else if(k==6){s.money-=500;c.p=Math.min(100,c.p+10);ch("uy",3);r="Bạn bỏ 500 lạng xây nhà thờ tổ khang trang, cả họ nức lòng."}
+else if(k==7){s.money-=1000;c.rc=(c.rc||0)+1;c.p=Math.min(100,c.p+6);ch("uy",2);r="Bạn mua thêm ruộng công cho họ, mỗi năm quỹ họ có thêm khoản thu."}
+else if(k==8){s.money-=2000;c.p=Math.min(100,c.p+20);ch("uy",8);dk(5);r="Bạn lập tộc ước và mở học đường họ, danh tiếng gia tộc vang xa."}
+else{wed(40);s.money+=Math.round(ri(50,200)*(1+c.p/100));c.p=Math.min(100,c.p+2);r=(par().length?"Cha mẹ":"Trưởng họ")+" đứng ra mai mối, hai nhà môn đăng hộ đối kết thông gia. 🎎"}
+L("🏯 "+r,"r");done()}
+function clanPanel(){const c=s.cn;if(!c)return "<p>Bạn chưa có gia tộc.</p>";const d=s.ci?"":"disabled";
+const ord=m=>{const i=KIN.indexOf(m.r);return i<0?9:i},row=m=>`<div class="nc">${av({k:kk(m.a,m.g),f:m.g,n:m.n,r:m.r=="trưởng họ"?"thay":""},40)}<div class="nb"><b>${m.n}</b><small> · ${m.r}, ${m.a} tuổi</small></div></div>`;
+const near=c.m.filter(m=>ord(m)<9).sort((a,b)=>ord(a)-ord(b)),far=c.m.filter(m=>ord(m)==9);
+return `<div class="tb">${c.n} · quỹ họ ${c.f} lạng · lượt hành động: ${s.ci?"còn 1":"đã hết"}</div><div class="nc"><div class="nb"><b>Danh vọng gia tộc</b> (${Math.round(c.p)})<div class="bar"><i style="width:${c.p}%"></i></div><small>Một người làm nên, cả họ được nhờ. Một người phạm tội, cả họ chịu họa.</small></div></div>`
++`<div class="tb">Ruột thịt</div>`+(near.length?near.map(row).join(""):"<p>Bạn không còn ai là ruột thịt.</p>")+`<div class="tb">Họ hàng</div>`+far.map(row).join("")
++`<div class="nc"><div class="nb"><div class="bt" style="flex-wrap:wrap">`+[["Phụng dưỡng cha mẹ (-50)",5],["Góp quỹ họ (-100)",0],["Cúng giỗ tổ (-30)",1],["Giúp tộc nhân nghèo (-60)",2],["Nhờ họ giúp đỡ",3],["Nhờ họ mai mối",4],["Xây nhà thờ tổ (-500)",6],["Mua ruộng công (-1000)",7],["Lập tộc ước, học đường (-2000)",8]].map(([t,k])=>`<button ${d} style="flex:1 1 45%" onclick="clanAct(${k})">${t}</button>`).join("")+`</div></div></div>`}
+const gain=(a,b)=>Math.round(ri(a,b)*(1+s.rank*.15));
+const GIG=[
+{n:"Làm thuê vặt",d:"Kiếm ít bạc lẻ, hơi mệt.",c:()=>s.age>=12,f:()=>{const m=gain(10,30);s.money+=m;ch("hp",-1);return "Bạn làm thuê vặt, kiếm được "+m+" lạng."}},
+{n:"Dệt vải, thêu thùa",d:"Nghề khéo tay của nữ nhi.",c:()=>s.f&&s.age>=12,f:()=>{const m=gain(25,70);s.money+=m;return "Vải của bạn bán chạy, thu "+m+" lạng. 🧵"}},
+{n:"Dạy chữ cho trẻ làng",d:"Cần đèn sách từ 40.",c:()=>s.hoc>=40&&s.age>=16,f:()=>{const m=gain(15,40);s.money+=m;ch("uy",1);return "Bạn dạy chữ cho trẻ, thu "+m+" lạng."}},
+{n:"Viết văn tế, câu đối thuê",d:"Cần đèn sách từ 50.",p:["quan","nho"],c:()=>s.hoc>=50,f:()=>{const m=gain(30,80);s.money+=m;return "Bạn viết câu đối thuê, thu "+m+" lạng."}},
+{n:"Nhận lễ tạ của dân",d:"Kiếm bộn nhưng mang tiếng, dễ bị đồn.",p:["quan"],f:()=>{const m=gain(60,160);s.money+=m;ch("liem",-4);if(p(.2)){ch("uy",-6);return "Bạn nhận "+m+" lạng nhưng bị dân đồn đại."}return "Bạn nhận "+m+" lạng lễ tạ."}},
+{n:"Viết sách",d:"Cần đèn sách từ 40, thêm danh tiếng.",p:["nho"],c:()=>s.hoc>=40,f:()=>{const m=gain(40,130);s.money+=m;ch("hoc",2);ch("uy",2);return "Sách của bạn được bán, thu "+m+" lạng. 📚"}},
+{n:"Dạy kèm con nhà giàu",d:"Thu nhập khá, ổn định.",p:["nho"],f:()=>{const m=gain(50,120);s.money+=m;return "Bạn được "+m+" lạng tiền dạy kèm."}},
+{n:"Dạy võ cho thanh niên",d:"Thêm chút danh tiếng.",p:["vo","hiep"],f:()=>{const m=gain(30,80);s.money+=m;ch("uy",2);return "Bạn dạy võ, thu "+m+" lạng. 🥋"}},
+{n:"Hộ tống thương đoàn",d:"Lãi lớn nhưng có thể gặp cướp.",p:["vo","hiep"],f:()=>{const m=gain(80,200);s.money+=m;if(p(.25)){ch("hp",-12);return "Bị cướp tấn công, bạn bị thương nhưng vẫn nhận "+m+" lạng."}return "Chuyến đi bình an, bạn nhận "+m+" lạng."}},
+{n:"Buôn chuyến hàng nhỏ",d:"Có lời có lỗ.",p:["thuong"],f:()=>{if(p(.7)){const m=gain(40,150);s.money+=m;return "Bạn lãi "+m+" lạng. 📈"}const m=gain(20,80);s.money-=m;return "Bạn lỗ "+m+" lạng. 📉"}},
+{n:"Cho vay lãi",d:"Tiền đẻ ra tiền, mang tiếng bóc lột.",p:["thuong"],f:()=>{const m=gain(40,120);s.money+=m;ch("liem",-3);ch("uy",-1);return "Bạn thu "+m+" lạng tiền lãi."}},
+{n:"Buôn lậu muối",d:"Lãi lớn, nhưng bị bắt là mất trắng.",p:["thuong"],f:()=>{if(p(.65)){const m=gain(150,350);s.money+=m;ch("liem",-4);return "Chuyến hàng lậu trót lọt, bạn lãi "+m+" lạng."}s.money-=200;ch("uy",-8);ch("liem",-5);return "Bạn bị quan thuế bắt, phạt 200 lạng."}},
+{n:"Bán thuốc chợ phiên",d:"Việc nhẹ nhàng, tích danh tiếng.",p:["y"],f:()=>{const m=gain(30,100);s.money+=m;ch("uy",1);return "Bạn bán thuốc, thu "+m+" lạng. 🌿"}},
+{n:"Bốc thuốc cho nhà giàu",d:"Cần đèn sách từ 40.",p:["y"],c:()=>s.hoc>=40,f:()=>{const m=gain(80,180);s.money+=m;ch("hoc",1);return "Nhà giàu hậu tạ bạn "+m+" lạng."}},
+{n:"Bán thuốc rởm kiếm lời",d:"Lãi to, mất đức, dễ bị vạch mặt.",p:["y"],f:()=>{const m=gain(150,300);s.money+=m;ch("liem",-8);if(p(.3)){ch("uy",-10);return "Bạn lãi "+m+" lạng nhưng bị người ta vạch mặt."}return "Bạn lãi "+m+" lạng."}},
+{n:"Bảo kê chợ búa",d:"Thu tiền bảo hộ, mất tiếng.",p:["hiep"],f:()=>{const m=gain(80,180);s.money+=m;ch("liem",-4);ch("uy",-2);return "Bạn thu "+m+" lạng tiền bảo hộ."}},
+{n:"Cướp của nhà giàu",d:"Lãi lớn, bị quan truy nã thêm.",p:["hiep"],f:()=>{const m=gain(150,350);s.money+=m;s.wt++;ch("uy",3);return "Bạn cướp được "+m+" lạng chia cho anh em. 🗡️"}},
+{n:"Nuôi gà vịt, nuôi tằm",d:"Thêm một khoản đều đặn.",p:["nong"],f:()=>{const m=gain(30,90);s.money+=m;return "Bạn bán trứng, tơ tằm thu "+m+" lạng. 🐔"}},
+{n:"Bán nông sản ở chợ",d:"Lãi chắc, vất vả.",p:["nong"],f:()=>{const m=gain(40,100);s.money+=m;ch("hp",-1);return "Bạn bán nông sản thu "+m+" lạng."}},
+{n:"Nhận đồ sửa chữa",d:"Việc lặt vặt đều tay.",p:["cong"],f:()=>{const m=gain(30,80);s.money+=m;return "Bạn sửa đồ thu "+m+" lạng."}},
+{n:"Làm đồ bán chợ phiên",d:"Hàng đẹp bán được giá.",p:["cong"],f:()=>{const m=gain(50,130);s.money+=m;ch("uy",1);return "Hàng của bạn bán chạy, thu "+m+" lạng."}},
+{n:"Nhận đơn đặt riêng",d:"Thu nhập cao, tăng tay nghề.",p:["cong"],f:()=>{const m=gain(80,180);s.money+=m;ch("hoc",1);return "Bạn hoàn thành đơn đặt riêng, thu "+m+" lạng."}}
+];
+const gigs=()=>GIG.filter(g=>(!g.p||g.p.includes(s.path))&&(!g.c||g.c()));
+function gig(i){if(ev||s.dead||!s.gi)return;const g=gigs()[i];if(!g)return;s.gi=0;s.lq=g.n;s.lqa=s.age;L("💼 "+g.n+": "+g.f(),"r");done()}
+function soc(i,k){if(ev||s.dead||!s.ia)return;const n=s.npc[i];if(!n)return;L("👥 "+socN(n).o[k].f(),"r",av(n,36));done()}
+function socPanel(){return socPanel0()+kidPanel()}
+function socPanel0(){const d=s.ia?"":"disabled";return `<div class="tb">Lượt giao tế năm nay: ${s.ia?"còn 1":"đã hết"}</div>`+(s.npc.length?s.npc.map((n,i)=>`<div class="nc">${av(n,52)}<div class="nb"><b>${n.n}</b><small> · ${n.l}</small><div class="bar"><i style="width:${(n.v+100)/2}%"></i></div><small>${vb(n.v)} (${n.v})</small><div class="bt" style="flex-wrap:wrap"><button ${d} onclick="soc(${i},0)">Trò chuyện</button><button ${d} onclick="soc(${i},1)">Tặng quà (-30)</button><button ${d} onclick="soc(${i},2)">${n.r=="dich"?"Giảng hòa (-40)":"Nhờ giúp"}</button>${n.r=="phoi"?`<button ${d} onclick="soc(${i},3)">Bàn chuyện con</button><button ${d} onclick="soc(${i},4)">Đi chơi (-20)</button>`:""}</div></div></div>`).join(""):"<p>Bạn chưa quen ai. Lớn lên sẽ có thầy, bạn bè và quý nhân.</p>")}
+function gigPanel(){const g=gigs(),d=s.gi?"":"disabled";return `<div class="tb">Việc phụ năm nay: ${s.gi?"còn 1 lượt":"đã làm"}. Tiền công tăng theo địa vị của bạn.</div>`+(g.length?g.map((x,i)=>`<div class="nc"><div class="nb"><b>${x.n}</b><br><small>${x.d}</small><div class="bt"><button ${d} onclick="gig(${i})">Làm việc này</button></div></div></div>`).join(""):"<p>Bạn còn nhỏ, chưa làm thêm được gì.</p>")}
+const PR={quan:"quan trên",vo:"tướng lão luyện",thuong:"thương gia kỳ cựu",y:"danh y sư phụ",nho:"danh sĩ tiền bối",hiep:"đại ca giang hồ",nong:"điền chủ lão luyện",cong:"thợ cả sư phụ"};
+const nf=r=>s.npc.find(n=>n.r==r),bond=(n,d)=>{n.v=Math.max(-100,Math.min(100,n.v+d))};
+const vb=v=>v>=60?"thân thiết":v>=30?"quý mến":v>=-10?"bình thường":v>=-40?"lạnh nhạt":"thù ghét";
+function addN(r,l,k,f,v,nm){const n={r,l,k,f:+!!f,v,n:nm||(f?R(SN)+" Thị "+R(FN):R(SN)+" "+R(MN)+" "+R(GN))};s.npc.push(n);L("👤 Bạn quen "+l+" "+n.n+".","r",av(n));return n}
+function av(n,z){z=z||48;let h=0;for(const c of n.n||"x")h=(h*31+c.charCodeAt(0))%997;
+const sk=["#f7e6de","#f3d9c4","#ebc9a8"][h%3],hc=["#5a3a34","#3b2824","#2c2430"][h%3],hl=["#8a5f55","#664a40","#4d4258"][h%3],fr=["#5f5350","#4f5a5c","#5b5166"][h%3],K=n.k||"dan",F=n.f,O="#1d1a1a";
+const rc={quan:"#b3302a",vo:"#566b7d",thuong:"#a8782f",y:"#3f8a64",nho:"#34487a",hiep:"#3a3a46",nong:"#8f8340",cong:"#8a523f",tre:"#e0b050"}[K]||["#a89258","#7aa595","#8aa0c4"][h%3];
+const S=`stroke="${O}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"`;
+const H={quan:`<path d="M17 20Q17 5 32 5Q47 5 47 20Z" fill="#17171c" ${S}/><rect x="6" y="11" width="13" height="4" rx="2" fill="#17171c" ${S}/><rect x="45" y="11" width="13" height="4" rx="2" fill="#17171c" ${S}/><path d="M17 17H47" stroke="#e0b050" stroke-width="2.2"/>`,
+vo:`<path d="M10 27Q9 4 32 4Q55 4 54 27L48 23Q32 14 16 23Z" fill="#9aa4ae" ${S}/><circle cx="32" cy="5" r="4" fill="#c0392b" ${S}/><path d="M32 9V17" stroke="${O}" stroke-width="2.4"/>`,
+thuong:`<path d="M11 26Q10 5 32 5Q54 5 53 26Q32 15 11 26Z" fill="#7a4e26" ${S}/><path d="M12 20Q32 11 52 20" stroke="#e0b050" stroke-width="2.4" fill="none"/><circle cx="32" cy="10" r="2.4" fill="#e0b050" ${S}/>`,
+y:`<path d="M11 26Q10 6 32 6Q54 6 53 26Q32 16 11 26Z" fill="#2f7d58" ${S}/><circle cx="32" cy="13" r="3.4" fill="#fff" ${S}/><path d="M32 11V15M30 13H34" stroke="#2f7d58" stroke-width="1.2"/>`,
+nho:`<rect x="12" y="3" width="40" height="17" rx="8" fill="#23232c" ${S}/><path d="M13 16H51" stroke="#5a5a6a" stroke-width="2"/>`,
+hiep:`<path d="M3 25L32 3L61 25Q32 19 3 25Z" fill="#dcb97c" ${S}/><path d="M13 22L32 8M51 22L32 8M32 8V21" stroke="#b08d50" stroke-width="1.2" fill="none"/>`,
+nong:`<path d="M8 26Q8 5 32 5Q56 5 56 26Q32 17 8 26Z" fill="#d8c270" ${S}/><path d="M14 21Q32 13 50 21" stroke="#a8934a" stroke-width="1.4" fill="none"/>`,
+cong:`<rect x="11" y="13" width="42" height="8" rx="4" fill="#b3302a" ${S}/><circle cx="32" cy="11" r="5.5" fill="#b3302a" ${S}/>`};
+let g=`<rect x="2" y="2" width="60" height="60" rx="5" fill="${fr}"/>`;
+if(F)g+=`<path d="M9 38Q6 10 32 8Q58 10 55 38L56 57Q50 61 46 54L46 40H18L18 54Q14 61 8 57Z" fill="${hc}" ${S}/>`;
+g+=`<path d="M6 62Q7 50 20 48H44Q57 50 58 62Z" fill="${rc}" ${S}/><path d="M26 48L32 56L38 48Z" fill="#fff" ${S}/>`;
+g+=`<ellipse cx="32" cy="32" rx="${F?20:21.5}" ry="18" fill="${sk}" ${S}/>`;
+if(K=="tre"&&F)g+=`<circle cx="13" cy="15" r="6.5" fill="${hc}" ${S}/><circle cx="51" cy="15" r="6.5" fill="${hc}" ${S}/>`;
+else if(!F&&(K=="dan"||K=="nho"||K=="nong"))g+=`<circle cx="32" cy="6.5" r="4.5" fill="${hc}" ${S}/>`;
+else if(F)g+=`<circle cx="32" cy="6" r="5" fill="${hc}" ${S}/><circle cx="32" cy="6" r="1.6" fill="#e8c26a"/>`;
+g+=(K=="tre"&&!F)?`<path d="M32 13Q40.5 13 41.5 19.5Q41.5 25.5 32 28.5Q22.5 25.5 22.5 19.5Q23.5 13 32 13Z" fill="${hc}" ${S}/><path d="M27 17.5Q30 15.5 34 16.5" stroke="${hl}" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="12" r="3.4" fill="${hc}" ${S}/>`:K=="teen"?`<path d="M13 30Q12 15 32 14Q52 15 51 30Q47 21 32 20Q17 21 13 30Z" fill="${hc}" ${S}/><circle cx="32" cy="10" r="4.4" fill="${hc}" ${S}/>`:`<path d="M10 33Q8 9 32 8Q56 9 54 33Q50 20 40 17Q34 25 20 22Q13 25 10 33Z" fill="${hc}" ${S}/><path d="M20 14Q28 10 37 13M26 17Q33 15 40 19" stroke="${hl}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
+if(F){if(K=="vo"||K=="hiep")g+=H[K];else if(K!="dan"&&K!="tre")g+=`<path d="M11 24Q32 11 53 24" stroke="${rc}" stroke-width="3.6" fill="none" ${S.replace('stroke="'+O+'" stroke-width="1.8"','')}/><circle cx="47" cy="15" r="4.2" fill="${rc}" ${S}/><circle cx="47" cy="15" r="1.4" fill="#fff"/>`}
+else if(H[K])g+=H[K];
+g+=(F?`<path d="M17 28Q21 25.5 26 27M38 27Q43 25.5 47 28" stroke="${O}" stroke-width="1.2" fill="none" stroke-linecap="round"/>`:`<path d="M16.5 27.5Q21 24 26.5 27M37.5 27Q43 24 47.5 27.5" stroke="${O}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`)
++`<ellipse cx="23" cy="36" rx="${F?4.2:3.8}" ry="${F?5.2:4.4}" fill="#161212"/><ellipse cx="41" cy="36" rx="${F?4.2:3.8}" ry="${F?5.2:4.4}" fill="#161212"/>`
++(F?`<path d="M16.5 32Q22 28 27.5 32M36.5 32Q42 28 47.5 32" stroke="${O}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M16.5 32L13.5 29.6M17.8 30.6L15.5 27.6M19.5 29.6L18 26.6M47.5 32L50.5 29.6M46.2 30.6L48.5 27.6M44.5 29.6L46 26.6" stroke="${O}" stroke-width="1.5" stroke-linecap="round"/>`:`<path d="M18 32.4Q22 30.6 27 32.4M37 32.4Q42 30.6 46 32.4" stroke="${O}" stroke-width="1.2" fill="none" stroke-linecap="round"/>`)
++`<ellipse cx="16.5" cy="43" rx="${F?5.6:4}" ry="${F?4.2:3}" fill="#f2a7a7"/><ellipse cx="47.5" cy="43" rx="${F?5.6:4}" ry="${F?4.2:3}" fill="#f2a7a7"/><path d="M13.5 41.5L14.3 44M16.5 41L17.2 44M19.5 41.5L20 44M44 41.5L44.5 44M47 41L47.7 44M50 41.5L50.8 44" stroke="#dc7f7f" stroke-width="1" stroke-linecap="round"/>`
++`<ellipse cx="32" cy="41" rx="1.7" ry="1.1" fill="#f0b0aa"/><path d="M29 45Q32 47.5 35 45" stroke="#9a4a4a" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+if(!F&&n.r=="thay")g+=`<path d="M19 46Q32 63 45 46Q32 54 19 46Z" fill="#f2f2f2" ${S}/>`;
+g+=`<rect x="2" y="2" width="60" height="60" rx="5" fill="none" stroke="${O}" stroke-width="2.6"/>`;
+return `<svg viewBox="0 0 64 64" width="${z}" height="${z}" style="flex:none">${g}</svg>`}
+function fam(){const a=[],sp=nf("phoi");if(sp)a.push(av(sp,30));s.cl.forEach(c=>a.push(av({k:kk(c.a,!c.g),f:!c.g,n:c.n},30)));return a.length?`<div class="fam">${a.join("")}</div>`:""}
+function socE(){if(ev||s.dead)return;if(!s.ia){L("Năm nay bạn đã giao tế rồi, hãy để sang năm.","r");return render()}
+show({t:"👥 Bạn muốn gặp gỡ ai?",o:[...s.npc.slice(0,5).map(n=>o(n.l+" "+n.n+" ("+vb(n.v)+")",()=>{show(socN(n))})),o("← Quay lại",()=>"")]})}
+function socN(n){const rv=n.r=="dich";
+return{t:()=>{cn=n;return "Bạn gặp "+n.l+" "+n.n+" ("+vb(n.v)+")."},o:[
+o("Thăm hỏi, trò chuyện",()=>{s.ia=0;bond(n,ri(3,6)+(s.dm>=70?1:0));return "Bạn và "+n.n+" trò chuyện hồi lâu."}),
+o("Tặng quà (-30 lạng)",()=>{s.ia=0;s.money-=30;bond(n,ri(8,12));return n.n+" nhận quà, vui ra mặt."}),
+rv?o("Mời giảng hòa (-40 lạng)",()=>{s.ia=0;s.money-=40;if(p(.6)){bond(n,15);return "Hai bên tạm gác hiềm khích."}bond(n,-3);return n.n+" lạnh nhạt từ chối."}):o("Nhờ giúp đỡ",()=>{s.ia=0;if(n.v<30){bond(n,-4);return n.n+" từ chối, vì tình nghĩa chưa đủ sâu."}
+if(n.r=="thay"){ch("hoc",6);return n.n+" chỉ bảo thêm cho bạn."}
+if(n.r=="ban"){const m=ri(80,160);s.money+=m;return n.n+" giúp bạn "+m+" lạng."}
+if(n.r=="phoi"){ch("hp",5);return n.n+" chăm sóc bạn chu đáo."}
+if(svc()&&s.rank<7&&p(.5))return pro();ch("uy",4);return n.n+" giúp bạn gây dựng danh tiếng."}),
+...(n.r=="phoi"?[o("Bàn chuyện con cái",()=>{s.ia=0;return tryChild(0)}),o("Cùng đi chơi, hẹn hò (-20 lạng)",()=>{s.ia=0;s.money-=20;bond(n,ri(6,10));ch("hp",1);return "Hai vợ chồng đi dạo ngắm cảnh, tình cảm thêm gắn bó. 🌸"})]:[]),o("← Quay lại",()=>"")]}}
+function pathE(){
+const qn=o(s.f?"🎭 Cải trang nam nhi, dự thi khoa cử":"📜 Dùi mài khoa cử, ra làm quan",()=>{s.path="quan";if(s.f)s.disg=1;setP();return s.f?"Bạn cải trang thành nam nhi, quyết dự khoa thi mà không ai hay biết.":"Bạn quyết theo đường khoa cử, đèn sách thâu đêm."});
+const vq=o(s.f?"⚔️ Cầm quân như các nữ tướng thuở xưa":"⚔️ Đầu quân, theo nghiệp võ tướng",()=>{s.path="vo";setP();s.rank=1;s.yr=0;ch("hp",4);return "Bạn nhập ngũ, bắt đầu từ chức lính. ⚔️"});
+const tq=o(s.f?"💰 Làm bà buôn, mở hàng khắp chợ":"💰 Theo nghiệp buôn bán",()=>{s.path="thuong";setP();s.rank=1;s.yr=0;giveK("hieu");s.money+=Math.round(FA[s.fam].m/2);return "Bạn lấy vốn nhà mở một gánh hàng nhỏ. 💰"});
+const nq=o(s.f?"🌾 Làm ruộng, cày cấy nuôi gia đình":"🌾 Theo nghiệp nông, cày cấy",()=>{s.path="nong";setP();s.rank=1;s.yr=0;ch("hp",6);giveK("ruong");s.money+=Math.round(FA[s.fam].m/3);return "Bạn nhận mảnh ruộng nhà, bắt đầu một đời cày cấy. 🌾"});
+const cq=o(s.f?"🔨 Học nghề thủ công (dệt, gốm, thêu)":"🔨 Học nghề thợ thủ công",()=>{s.path="cong";setP();s.rank=1;s.yr=0;ch("hoc",3);ch("hp",2);return "Bạn xin học việc ở một xưởng thủ công trong vùng. 🔨"});
+const mo=o("🌿 Xem những con đường khác…",()=>{show(path2())});
+return{t:"Bạn 18 tuổi, đã đến lúc chọn con đường đời. Bạn sẽ đi theo hướng nào?",o:[...(s.f?[tq,nq,cq,vq,qn]:[qn,nq,cq,tq,vq]),mo]}}
+function path2(){
+const mk=(k,n,m)=>o(n,()=>{s.path=k;setP();s.rank=1;s.yr=0;ch("hoc",k=="y"?5:k=="nho"?8:0);if(k=="hiep"){ch("hp",5);ch("liem",-8)}if(k=="nho")ch("uy",3);return m});
+return{t:"Còn những con đường khác đang chờ bạn:",o:[mk("y",s.f?"🩺 Học nghề lang y, cứu người chữa bệnh":"🩺 Học nghề thầy thuốc","Bạn xin vào học nghề với một thầy lang trong vùng. 🌿"),mk("nho",s.f?"🎋 Mở lớp dạy chữ, làm nữ sĩ ẩn dật":"🎋 Ở ẩn dạy học, làm thơ viết sách","Bạn mở một lớp dạy chữ nhỏ, sống đời thanh nhàn. 🎋"),mk("hiep",s.f?"🗡️ Làm nữ hiệp giang hồ":"🗡️ Làm hiệp khách giang hồ","Bạn xách kiếm rời quê, bước chân vào chốn giang hồ. 🗡️"),o("← Quay lại",()=>{show(pathE())})]}}
+const GR={y:["Một danh y mời bạn theo học bí truyền với học phí không nhỏ.","Bái sư học bí truyền","Tự mày mò sách thuốc"],nho:["Danh tiếng bạn lan rộng, nhiều người muốn theo học.","Mở rộng trường lớp","Chuyên tâm viết sách"],hiep:["Có cơ hội thu nạp thêm người, mở rộng thế lực.","Chiêu mộ nghĩa sĩ","Âm thầm tích lũy lực lượng"],nong:["Có cơ hội mua thêm ruộng đất, mở rộng cơ ngơi.","Mua thêm ruộng","Chăm chỉ khai khẩn đất hoang"],cong:["Có cơ hội mở rộng xưởng, nhận thêm thợ học việc.","Mở rộng xưởng","Mài giũa tay nghề"]};
+function growE(){const g=GR[s.path],cost=100*s.rank,op=[o(g[2],()=>p(.15+s.hoc/250+s.uy/500)?pro():"Chưa đủ thời cơ, bạn kiên nhẫn chờ thêm.")];
+if(s.money>=cost)op.unshift(o(g[1]+" (-"+cost+" lạng)",()=>{s.money-=cost;return p(.7)?pro():"Công sức bỏ ra nhưng chưa nên chuyện."}));
+return{t:g[0],o:op}}
+function tradeE(){const cost=200*s.rank;
+const op=[o("Giữ nguyên quy mô",()=>"Bạn thận trọng, giữ vững việc buôn bán.")];
+if(s.money>=cost)op.unshift(o("Bỏ vốn mở rộng (-"+cost+" lạng)",()=>{s.money-=cost;if(p(.7))return pro();ch("uy",-2);return "Mở rộng không thuận lợi, bạn mất vốn."}));
+return{t:"Có cơ hội mở rộng buôn bán: thuê thêm kho, tàu thuyền, người làm.",o:op}}
+function born(){const g=p(.5)?1:0,c={n:R(g?["Khôi","Bảo","Tài","Phúc","Nghĩa","Hưng"]:["Hạnh","Như","Ngọc","Thảo","Mai","Phượng"]),g,a:0,t:R(["hiếu thảo","chăm học","ham chơi","tháo vát"]),hoc:cl(ri(20,70)+Math.round((s.duc||0)/10)),j:"",out:0,m:0,v:50};s.cl.push(c);s.kids++;s.money-=20;return c}
+const livingCost=()=>20+Math.round(SAL[s.rank]*[0,0,0,.1,.1,.2,.2,.3][s.rank]*(s.ret?.4:1))+(s.wife?10:0)+(s.cl.filter(c=>c.a<18).length+Math.max(0,s.kids-s.cl.length))*8;
+function jail(w){if(p(.3))return die("chết trong ngục tối, "+w.toLowerCase());s.rank=1;s.yr=0;ch("uy",-20);if(s.cn)s.cn.p=Math.max(0,s.cn.p-8);return w+": bạn bị giam vào ngục rồi bị giáng xuống "+RK[1]+"."}
+const TC=["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"],DC=["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+const kk=(a,f)=>a<12?"tre":(a<18&&!f?"teen":"dan");
+const cc=a=>{const i=((s.by||0)+a)%60;return TC[i%10]+" "+DC[i%12]};
+const an=()=>Math.max(0,Math.min(100,Math.round(50+(s.duc||0)/4+(s.money>=0?8:-12)+(nf("phoi")?nf("phoi").v/10:0)+(s.kids||0)*2+(s.hp-50)/5-(s.wt||0)*3)));
+let spin=0;
+function drum(){let r="";for(let i=0;i<12;i++){const a=i*Math.PI/6;r+=`<path d="M${(32+7*Math.cos(a)).toFixed(1)} ${(32+7*Math.sin(a)).toFixed(1)}L${(32+15*Math.cos(a)).toFixed(1)} ${(32+15*Math.sin(a)).toFixed(1)}"/>`}
+return `<svg class="drum" viewBox="0 0 64 64" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="transform:rotate(${s.rot||0}deg)"><circle cx="32" cy="32" r="29"/><circle cx="32" cy="32" r="22" stroke-dasharray="2 4"/><circle cx="32" cy="32" r="18"/>${r}<circle cx="32" cy="32" r="5" fill="currentColor"/></svg>`}
+function spinUp(){if(ev||s.dead||spin)return;spin=1;s.rot=(s.rot||0)+30;const d=document.querySelector(".drum");if(d)d.style.transform="rotate("+s.rot+"deg)";setTimeout(()=>{spin=0;up()},450)}
+const AT={ruong:{n:"Ruộng đất",e:"🌾",p:300,i:30},nha:{n:"Nhà ngói",e:"🏠",p:500,i:0},hieu:{n:"Cửa hiệu",e:"🏪",p:400,i:45},thuyen:{n:"Thuyền buôn",e:"⛵",p:900,i:130},vang:{n:"Vàng bạc, đồ quý",e:"🪙",p:200,i:0},trau:{n:"Trâu cày",e:"🐂",p:100,i:15}};
+const asv=()=>s.as.reduce((a,x)=>a+x.v,0);
+function giveK(k){const t=AT[k];s.as.push({k,n:t.n,e:t.e,v:t.p,i:t.i})}
+function giveA(){const m={0:[],1:["hieu"],2:["nha"],3:["nha","ruong"]}[s.fam]||[];m.forEach(giveK);if(m.length)L("🏠 Gia đình chia cho bạn tài sản: "+m.map(k=>AT[k].n).join(", ")+".","r")}
+function buyA(k){const t=AT[k];if(ev||s.dead||s.money<t.p)return;s.money-=t.p;giveK(k);L("🏠 Bạn mua "+t.n+" ("+t.p+" lạng).","r");done()}
+function sellA(i){const x=s.as[i];if(ev||s.dead||!x)return;s.as.splice(i,1);const m=Math.round(x.v*.8);s.money+=m;L("🏠 Bạn bán "+x.n+" lấy "+m+" lạng.","r");done()}
+function assetYear(){if(!s.as.length)return;s.as.forEach(x=>{s.money+=x.i;if(x.k=="nha")ch("hp",1)});
+const pc=s.as.filter(x=>x.k=="ruong"||x.k=="hieu"||x.k=="thuyen");if(pc.length>=5){const t=Math.round(pc.reduce((a,x)=>a+x.i,0)*ri(10,15)/100);s.money-=t;L("🏛️ Cơ ngơi lớn phải nộp thuế cho quan phủ: "+t+" lạng.","r")}
+if(p(.05+Math.max(0,-(s.duc||0))/500)){const x=R(s.as),kar=(s.duc||0)<=-20;
+const T={ruong:"Hạn hán lũ lụt làm mất trắng mùa màng trên ruộng",nha:"Hỏa hoạn thiêu rụi một phần ngôi nhà",hieu:"Kẻ trộm đột nhập vét sạch cửa hiệu",thuyen:"Bão lớn đánh đắm thuyền hàng",vang:"Kẻ trộm khoét vách lấy mất vàng bạc",trau:"Dịch bệnh làm trâu cày chết hết"}[x.k];
+if((s.duc||0)>=40&&p(.5))L("🍀 Tai ương đến nhưng nhờ phúc đức dày, "+x.n+" của bạn thoát nạn.","r");
+else if(x.k=="ruong"||x.k=="nha"){const m=Math.round(x.v*.25);s.money-=m;ch("hp",-3);L("🔥 "+T+", bạn phải chi "+m+" lạng sửa sang."+(kar?" Người ta bảo đó là nghiệp báo.":""),"r")}
+else{s.as=s.as.filter(y=>y!=x);L("🔥 "+T+". Bạn mất "+x.n+" (trị giá "+x.v+" lạng)."+(kar?" Của phi nghĩa, nghiệp báo tìm đến.":""),"r")}}}
+function assetPanel(){let h=`<div class="tb">Tiền mặt ${Math.round(s.money)} lạng · Tài sản ${asv()} lạng · Tổng ${Math.round(s.money+asv())} lạng · Chi phí sinh hoạt ${livingCost()} lạng/năm</div>`;
+h+=s.as.length?s.as.map((x,i)=>`<div class="nc"><div style="font-size:30px">${x.e}</div><div class="nb"><b>${x.n}</b><small> · trị giá ${x.v} lạng${x.i?" · thu "+x.i+"/năm":x.k=="nha"?" · giúp khỏe, yên ổn":""}</small><div class="bt"><button onclick="sellA(${i})">Bán (${Math.round(x.v*.8)} lạng)</button></div></div></div>`).join(""):"<p>Bạn chưa có tài sản nào.</p>";
+return h+`<div class="tb">Mua thêm</div>`+Object.keys(AT).map(k=>{const t=AT[k],d=s.money>=t.p?"":"disabled";return `<div class="nc"><div style="font-size:30px">${t.e}</div><div class="nb"><b>${t.n}</b><small> · ${t.p} lạng${t.i?" · thu "+t.i+"/năm":""}</small><div class="bt"><button ${d} onclick="buyA('${k}')">Mua</button></div></div></div>`}).join("")}
+function kid(i,k){if(ev||s.dead||!s.ia)return;const c=s.cl[i];if(!c)return;s.ia=0;let r;
+if(k==0){c.v=Math.min(100,(c.v??50)+8);r="Bạn dành thời gian vui đùa với "+c.n+", bé rất vui."}
+else if(k==1){c.hoc=cl(c.hoc+4);c.v=Math.max(0,(c.v??50)-2);r="Bạn kèm "+c.n+" học chữ chăm chỉ, kiến thức tăng thêm."}
+else if(k==2){s.money-=20;c.v=Math.min(100,(c.v??50)+6);r="Bạn thưởng quà cho "+c.n+"."}
+else{c.v=Math.max(0,(c.v??50)-3);if(c.t=="ham chơi"&&p(.2)){c.t="chăm học";r="Nhờ nghiêm khắc răn dạy, "+c.n+" đã chịu chăm chỉ hơn."}else r="Bạn nghiêm khắc răn dạy "+c.n+", bé hơi sợ."}
+L("👨‍👧 "+r,"r");done()}
+function kidPanel(){if(!s.cl.length)return "";const d=s.ia?"":"disabled";return `<div class="tb">Con cái</div>`+s.cl.map((c,i)=>`<div class="nc">${av({k:kk(c.a,!c.g),f:!c.g,n:c.n},52)}<div class="nb"><b>${c.n}</b><small> · ${c.a} tuổi · tính ${c.t}</small><div class="bar"><i style="width:${c.v??50}%"></i></div><small>Tình thân ${c.v??50}</small><div class="bt" style="flex-wrap:wrap"><button ${d} onclick="kid(${i},0)">Vui đùa</button><button ${d} onclick="kid(${i},1)">Kèm học</button><button ${d} onclick="kid(${i},2)">Thưởng (-20)</button><button ${d} onclick="kid(${i},3)">Răn dạy</button></div></div></div>`).join("")}
+const NM=[["Khôi","Bảo","Tài","Phúc","Nghĩa","Hưng"],["Hạnh","Như","Ngọc","Thảo","Mai","Phượng"]],TR={Khôi:"chăm học",Bảo:"hiếu thảo",Tài:"tháo vát",Phúc:"hiếu thảo",Nghĩa:"hiếu thảo",Hưng:"tháo vát",Hạnh:"hiếu thảo",Như:"chăm học",Ngọc:"chăm học",Thảo:"hiếu thảo",Mai:"tháo vát",Phượng:"tháo vát"};
+function tryChild(b){const sp=nf("phoi");if(!sp)return "Bạn chưa có gia thất.";
+if(s.preg)return sp.n+" đã có tin vui rồi, cả nhà đang chờ ngày sinh. 🤰";
+if(s.kids>=5)return "Nhà đã đông con, hai vợ chồng thấy thế là đủ.";
+if(s.age-(s.f?0:2)>42)return "Tuổi tác không còn thuận cho chuyện sinh nở.";
+if(sp.v<10){bond(sp,-3);return sp.n+" chưa muốn có con vào lúc này, cần thêm thời gian."}
+if(p(.5+sp.v/250+(b||0)+((s.dm||50)-50)/500)){s.preg=1;bond(sp,4);return "Hai vợ chồng bàn bạc rồi có tin vui: "+(s.f?"bạn":sp.n)+" có thai! 🤰"}
+bond(sp,1);return "Hai vợ chồng cố gắng nhưng năm nay chưa có tin vui."}
+function nameE(c){const nm=sh(NM[c.g?0:1]).slice(0,3);return{t:"Hai vợ chồng bàn nhau đặt tên cho bé "+(c.g?"trai":"gái")+". Bạn chọn tên nào?",o:nm.map(x=>o(x+" (mong con "+TR[x]+")",()=>{c.n=x;if(p(.6))c.t=TR[x];return "Bé được đặt tên là "+x+", cả nhà gửi gắm bao hy vọng."}))}}
+function born2(pre){const c=born();if(pre)L(pre,"r");L("👶 Bé "+(c.g?"trai":"gái")+" chào đời, khỏe mạnh.","r");show(nameE(c));return ""}
+function birthE(){const sp=nf("phoi");return{t:"Đến ngày sinh nở, cả nhà hồi hộp chờ tin. 👶",o:[
+o("Mời thầy lang và bà mụ giỏi nhất (-60 lạng)",()=>{s.money-=60;return born2()}),
+o("Nhờ bà mụ trong làng (-10 lạng)",()=>{s.money-=10;if(p(.08)){ch("hp",-6);if(sp)bond(sp,-8);return born2("Ca sinh khó, mẹ con suýt nguy kịch nhưng may qua khỏi.")}return born2()}),
+o("Tự lo ở nhà cho đỡ tốn",()=>{if(p(.04)){if(s.f)return die("mất vì khó sinh");s.wife=null;s.npc=s.npc.filter(x=>x!=sp);ch("hp",-8);L("💔 "+(sp?sp.n:"Vợ bạn")+" mất vì khó sinh, đứa trẻ may mắn sống sót.","r");return born2()}return born2()})]}}
+function homeYear(){const sp=nf("phoi");if(sp&&p(.4))bond(sp,-1)}
+function kidsYear(){let g=0;s.cl.forEach(c=>{c.a++;
+if(c.a==6)L("📚 "+c.n+" đến tuổi học chữ.");
+if(c.a==18){c.j=c.t=="chăm học"?"học trò":c.t=="tháo vát"?"buôn bán":"làm ruộng";L("🧑 "+c.n+" đã trưởng thành, tính "+c.t+", nay theo nghề "+c.j+".")}
+if(c.a>=18&&!c.out){const b={"học trò":0,"cử nhân":ri(30,80),"buôn bán":ri(-10,60),"làm ruộng":ri(5,20)}[c.j]||0;g+=Math.round(b*(c.t=="hiếu thảo"?1.5:c.t=="ham chơi"?.2:1)*(.6+(c.v??50)/125));if(c.t=="hiếu thảo"&&s.age>50)ch("hp",1)}});
+if(g){s.money+=g;L(g>0?"👨‍👧 Các con đỡ đần gia đình thêm "+g+" lạng.":"Các con làm ăn thua lỗ, bạn phải bù "+(-g)+" lạng.","r")}}
+function dsE(){if(ev||s.dead)return;show({t:"☯️ Tu dưỡng: chọn phép dưỡng sinh cho những năm tới, hoặc làm việc thiện tích đức.",o:[...Object.keys(DS).map(k=>o(DS[k].n+" ("+DS[k].d+")",()=>{s.ds=k;return "Bạn theo phép dưỡng sinh: "+DS[k].n+"."})),...(s.di?[o("🙏 Bố thí người nghèo (-60 lạng)",()=>{s.di=0;s.money-=60;dk(6);ch("uy",2);return "Bạn bố thí cho người khốn khó, lòng nhẹ nhõm. ☯️"}),o("🙏 Cúng dường, phóng sinh (-30 lạng)",()=>{s.di=0;s.money-=30;dk(4);return "Bạn cúng dường chùa chiền và phóng sinh chim cá. ☯️"}),o("🙏 Tụng kinh, tu tâm",()=>{s.di=0;ch("hp",1);dk(3);return "Bạn ngồi tụng kinh, tâm an tĩnh. ☯️"})]:[]),o("Thôi, không dưỡng sinh nữa",()=>{s.ds=null;return "Bạn không theo phép dưỡng sinh nào."})]})}
+function up(){if(ev||s.dead)return;
+s.age++;const a=s.age;s.ia=1;s.gi=1;s.ci=1;s.di=1;tab="life";s.log.push({h:a});
+if(a>=6&&a<=40&&s.deg<3)ch("hoc",Math.max(0,ri(0,3)+(s.hue>=70?1:s.hue<30?-1:0)));
+if(a>35&&p(.5))ch("dm",-1);
+if(an()<30)ch("hp",-1);else if(an()>=75)ch("hp",1);
+if(a>40)ch("hp",-ri(0,2)-(a>60?ri(1,2):0));
+if(svc()){s.yr++;if(s.path!="thuong")ch("sung",ri(-2,1));if(s.path=="hiep"&&p(.3))s.wt=Math.max(0,s.wt-1)}
+if(s.ds&&a>=12){const D=DS[s.ds];ch("hp",s.ds=="khi"&&a>60?ri(0,1):ri(D.a,D.b)+(s.path=="y"?1:0));s.money-=D.c;if(D.l)ch("liem",D.l)}
+const k=livingCost();
+if(s.ret)s.money+=Math.round(SAL[s.rank]*({thuong:.4,y:.25,nho:.2,hiep:.15,nong:.35,cong:.25}[s.path]||.3))-k;else if(s.rank)s.money+=Math.round(SAL[s.rank]*({thuong:ri(7,22),y:ri(8,16),nho:ri(4,10),hiep:ri(2,25),nong:ri(6,15),cong:ri(8,15)}[s.path]||10)/10)-k;else s.money+=FA[s.fam].inc;
+kidsYear();clanYear();karmaYear();homeYear();assetYear();if(s.money<0)ch("uy",-2);
+const d=(a<45?.004:Math.pow((a-45)/45,3)*.9+.004)*(s.ds?.85:1)*(s.path=="y"?.8:1)*(1-(s.duc||0)/300);
+if(s.hp<=0||p(d*(1+Math.max(0,50-s.hp)/60)))return die();
+if(a==6){L("📚 Bạn bắt đầu học chữ Nho với thầy đồ.");addN("thay","thầy đồ","nho",0,30)}
+if(a==10)addN("ban","bạn thân","dan",R([0,1]),25);
+if(a==18)giveA();
+if(a==19){addN("dich","đối thủ",s.path,R([0,0,1]),-15);addN("quy",PR[s.path]||"quý nhân",s.path,R([0,0,1]),25)}
+if(s.wait>0&&--s.wait==0&&s.deg>=2){s.rank=s.deg==3?2:1;s.yr=0;L("📜 Triều đình khởi phục chức quan cho bạn: "+RK[s.rank]+".")}
+let e=null;
+if(s.preg&&a!=18){s.preg=0;e=birthE()}
+else if(a==18&&!s.path)e=pathE();
+else if(a>=16&&a%3==0&&s.path=="quan"&&!s.ret&&s.hoc>=30&&(s.deg<2||(s.deg==2&&s.rank<=1)))e=examE();
+else if(svc()&&s.rank<7&&s.yr>=3&&p(.3))e=promoE();
+else{e=pick();if(!e)L(R(Q))}
+if(e)show(e);else done()}
+function show(e){cn=null;const t=typeof e.t=="function"?e.t():e.t;const ic=cn?av(cn):"";s.lq=t.replace(/[^\p{L}\p{N}\s,.?!“”-]/gu,"").trim();s.lqa=s.age;
+if(e.o){L(t,"q",ic);ev=e;render()}else{L(t,"",ic);const r=e.f&&e.f();if(r)L(r,"r");done()}}
+function pk(i){const e=ev;ev=null;const r=e.o[i].f();if(r)L(r,"r");if(ev)return render();done()}
+function done(){if(s.dead)return;if(s.hp<=0)return die();save();render()}
+function die(c){s.dead=1;kd0=s.duc||0;try{localStorage.setItem("kd0",kd0)}catch(e){}try{localStorage.removeItem("quan")}catch(e){}
+const why=c||(s.hp<=0?"sức khỏe suy kiệt":s.age>65?"tuổi già":R(["bạo bệnh","cảm nặng","bệnh phổi"]));
+s.ep=s.path=="nong"&&s.rank>=5?"Ruộng đất của bạn trải dài đến tận chân trời, con cháu đời đời no đủ.":s.path=="cong"&&s.rank>=5?"Tay nghề của bạn để lại những tác phẩm truyền đời.":s.path=="y"&&s.rank>=5?"Tên bạn được truyền tụng như một bậc lương y từ mẫu.":s.path=="nho"&&s.rank>=5?"Học trò khắp nơi nhớ ơn, bạn được tôn là bậc thầy của muôn đời.":s.path=="hiep"&&s.rank>=5?"Giang hồ truyền tụng tên bạn mãi về sau.":s.path=="vo"&&s.rank>=5?"Bạn được ghi danh bậc công thần, tên khắc bia đá nghìn năm.":s.path=="thuong"&&s.rank>=5?"Thương hiệu của bạn lừng danh khắp nước, con cháu được hưởng phúc ấm.":s.path&&s.path!="quan"&&s.rank>=1?"Bạn sống trọn một đời "+({vo:"binh nghiệp",thuong:"buôn bán",y:"cứu người chữa bệnh",nho:"dạy học, làm thơ",hiep:"giang hồ",nong:"cày cấy",cong:"làm nghề thủ công"}[s.path])+", lắm thăng trầm.":s.rank>=6&&s.uy>=70?"Sử sách ghi danh một bậc danh thần, dân lập đền thờ.":s.rank>=3&&s.liem<25?"Sử sách chép bạn là kẻ gian thần tham lam.":s.rank>=1?"Bạn là một vị quan "+(s.liem>=60?"thanh liêm, được dân nhớ ơn.":"có công có tội, hậu thế còn tranh luận."):"Bạn sống đời bình dị, chưa từng bước chân vào chốn quan trường.";
+if(c&&/tru di/.test(c))s.ep="Cả "+(s.cn?s.cn.n:"dòng họ")+" bị xóa sổ, tên bạn bị ghi vào bia nhục.";
+s.sc=Math.round(s.rank*20+(s.uy+s.liem)/2+s.age+s.kids*3+s.duc/4+Math.max(0,s.money)/500);
+L("💀 Bạn qua đời ở tuổi "+s.age+", "+(c?why:"vì "+why)+".","d");render()}
+const title=()=>s.ret?RK[s.rank]+({quan:" (cáo lão)",vo:" (giải ngũ)",thuong:" (nghỉ ngơi)",y:" (gác nghề)",nho:" (ở ẩn)",hiep:" (gác kiếm)",nong:" (an hưởng)",cong:" (gác nghề)"}[s.path]||" (hưu)"):s.rank?RK[s.rank]:s.deg>1?"Chờ bổ nhiệm":s.deg==1?"Tú tài":s.age>5?"Học trò":"Trẻ thơ";
+function render(){
+$("start").hidden=!!s;$("game").hidden=!s;if(!s)return;
+$("hd").innerHTML=`<div class="hr" onclick="tgl()">${av({k:s.age<12?"tre":(s.path||"dan"),f:s.f&&!s.disg,n:s.name},38)}<div><b>🏮 ${s.name}</b><br><small>Tuổi ${s.age} · ${title()} · 💰 ${Math.round(s.money).toLocaleString("vi-VN")} lạng${ex?(s.wife?" · 💍 "+s.wife:"")+(s.kids?" · 👶 "+s.kids:"")+(s.preg?" · 🤰":"")+(s.hv&&s.deg>=2?" · 🎓 "+s.hv:"")+(s.dh?" · 🎖️ "+s.dh:"")+(s.gk?" · 🧒 "+s.gk:"")+(s.path=="hiep"?" · 🔎 "+s.wt:""):""}</small></div><span class="chv">${ex?"▴":"▾"}</span></div>${ex?fam():""}`;
+$("bars").className=ex?"":"cp";$("bars").innerHTML=!ex?ST.filter(x=>(x[3]||x[0]=="sung")&&(x[0]!="sung"||(s.rank>=1&&s.path!="thuong"&&s.path!="hiep"))).map(([k,i])=>`<span class="${s[k]<30?"lo":""}">${i} ${s[k]}</span>`).join("")+(s.path=="hiep"?`<span>🔎 ${s.wt}</span>`:""):ST.filter(x=>x[0]!="sung"||(s.rank>=1&&s.path!="thuong"&&s.path!="hiep")).map(([k,i,n])=>`<div>${i} ${n} · ${s[k]}<div class="bar"><i class="${s[k]<30?"lo":""}" style="width:${s[k]}%"></i></div></div>`).join("");
+$("bars").innerHTML+=ex?`<div>🕊️ An yên · ${an()}<div class="bar"><i style="width:${an()}%"></i></div></div><div>☯️ Phúc đức · ${s.duc}<div class="bar"><i class="${s.duc<0?"lo":""}" style="width:${(s.duc+100)/2}%"></i></div></div>`:`<span class="${an()<30?"lo":""}">🕊️ ${an()}</span><span class="${s.duc<0?"lo":""}">☯️ ${s.duc}</span>`+(s.preg?"<span>🤰</span>":"");
+const lg=$("log");if(ev||s.dead)tab="life";$("tabs").innerHTML=(ev||s.dead)?"":TB.filter(([k])=>k!="ds"||s.age>=12).map(([k,n,l])=>`<button class="${tab==k?"pb":""}" onclick="tb('${k}')"><div>${n}</div><small>${l}</small></button>`).join("");
+if(tab=="soc")lg.innerHTML=socPanel();else if(tab=="gig")lg.innerHTML=gigPanel();else if(tab=="clan")lg.innerHTML=clanPanel();else if(tab=="asset")lg.innerHTML=assetPanel();else{lg.innerHTML=s.log.map(x=>x.h!=null?`<h3>Tuổi ${x.h} · ${cc(x.h)}</h3>`:x.ic?`<div class="np">${x.ic}<p class="${x.c||""}">${x.t}</p></div>`:`<p class="${x.c||""}">${x.t}</p>`).join("");lg.scrollTop=lg.scrollHeight}
+const a=$("act");
+if(s.dead)a.innerHTML=`<div class="sum"><b>⚰️ ${s.name}</b><br>Hưởng dương ${s.age} tuổi · Chức cao nhất: ${RK[s.rank]}<br>Của cải: ${Math.round(s.money).toLocaleString("vi-VN")} lạng · Con cái: ${s.kids}${s.hv&&s.deg>=2?"<br>🎓 Học vị: "+s.hv:""}${s.dh?"<br>🎖️ "+s.dh:""}<br>☯️ Phúc đức: ${s.duc}${s.duc>=40?" (phúc dày, kiếp sau được nhờ)":s.duc<=-40?" (nghiệp nặng, kiếp sau còn chịu quả báo)":""}<br><i>${s.ep}</i><br><b>Điểm cuộc đời: ${s.sc}</b></div><button class="pb" onclick="reset()">Đầu thai kiếp mới</button>`;
+else if(ev)a.innerHTML=ev.o.map((x,i)=>`<button onclick="pk(${i})">${x.l}</button>`).join("");
+else a.innerHTML=`<button class="pb up" onclick="spinUp()">${drum()}<span>Sang năm mới<br><small>${cc(s.age)} → ${cc(s.age+1)}</small></span></button>`}
+try{if(localStorage.getItem("quan"))$("bc").hidden=false}catch(e){}
+</script>
+</body>
+</html>
